@@ -15,6 +15,14 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+
+    try:
+        from dotenv import load_dotenv
+    except ImportError as exc:
+        raise ImportError(
+            "Couldn't import dotenv module."
+        )
+    load_dotenv()
     execute_from_command_line(sys.argv)
 
 
