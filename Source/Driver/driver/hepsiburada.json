@@ -1,0 +1,140 @@
+{
+  "name": "hepsiburada",
+  "url": "https://hepsiburada.com",
+  "categories": [
+    {
+      "name": "bilgisayarlar",
+      "url": "https://www.hepsiburada.com/bilgisayarlar-c-2147483646",
+      "subcategories": [
+        {
+          "name": "bilgisayarlar",
+          "url": "https://www.hepsiburada.com/bilgisayarlar-c-3000500"
+        },
+        {
+          "name": "yazicilar",
+          "url": "https://www.hepsiburada.com/yazicilar-c-3013118"
+        },
+        {
+          "name": "veri_depolama",
+          "url": "https://www.hepsiburada.com/veri-depolama-urunleri-c-3013121"
+        },
+        {
+          "name": "bilgisayar_parcalari",
+          "url": "https://www.hepsiburada.com/bilgisayar-parcalari-c-8"
+        },
+        {
+          "name": "tablet",
+          "url": "https://www.hepsiburada.com/tablet-c-3008012"
+        },
+        {
+          "name": "cevre_birimleri",
+          "url": "https://www.hepsiburada.com/cevre-birimleri-c-3013120"
+        }
+      ]
+    },
+    {
+      "name": "ev_elektronik_urunleri",
+      "url": "https://www.hepsiburada.com/ev-elektronik-urunleri-c-2147483638",
+      "subcategories": [
+        {
+          "name": "ses_ve_goruntu_sistemleri",
+          "url": "https://www.hepsiburada.com/ses-goruntu-sistemleri-c-17201"
+        },
+        {
+          "name": "elektrikli_ev_aletleri",
+          "url": "https://www.hepsiburada.com/elektrikli-ev-aletleri-c-17071"
+        },
+        {
+          "name": "isitma_ve_sogutma",
+          "url": "https://www.hepsiburada.com/isitma-sogutma-urunleri-c-161876"
+        },
+        {
+          "name": "ev_gerecleri",
+          "url": "https://www.hepsiburada.com/ev-gerecleri-c-60002911"
+        }
+      ]
+    },
+    {
+      "name": "cep_telefonlari",
+      "url": "https://www.hepsiburada.com/cep-telefonlari-c-371965",
+      "subcategories": [
+        {
+          "name": "android_telefonlar",
+          "url": "https://www.hepsiburada.com/android-telefonlar-c-60005201"
+        },
+        {
+          "name": "iphone_ios_telefonlar",
+          "url": "https://www.hepsiburada.com/iphone-ios-telefonlar-c-60005202"
+        },
+        {
+          "name": "diger_telefonlar",
+          "url": "https://www.hepsiburada.com/diger-telefonlar-c-60005204"
+        }
+      ]
+    },
+    {
+      "name": "spor_outdoor_urunleri",
+      "url": "https://www.hepsiburada.com/spor-outdoor-urunleri-c-60001546",
+      "subcategories": [
+        {
+          "name": "spor_fitness",
+          "url": "https://www.hepsiburada.com/spor-fitness-urunleri-c-2147483635"
+        },
+        {
+          "name": "outdoor",
+          "url": "https://www.hepsiburada.com/outdoor-urunleri-c-2147483604"
+        }
+      ]
+    },
+    {
+      "name": "mobilyalar",
+      "url": "https://www.hepsiburada.com/mobilyalar-c-18021299",
+      "subcategories": [
+        {
+          "name": "oturma_odasi",
+          "url": "https://www.hepsiburada.com/oturma-odalari-c-18021303"
+        },
+        {
+          "name": "yatak_odasi",
+          "url": "https://www.hepsiburada.com/yatak-odalari-c-18021301"
+        },
+        {
+          "name": "genc_odasi",
+          "url": "https://www.hepsiburada.com/genc-odalari-c-18021386"
+        },
+        {
+          "name": "antre_hol",
+          "url": "https://www.hepsiburada.com/antre-holler-c-18021305"
+        },
+        {
+          "name": "yemek_odasi",
+          "url": "https://www.hepsiburada.com/yemek-odalari-c-18021302"
+        },
+        {
+          "name": "calisma_odasi",
+          "url": "https://www.hepsiburada.com/calisma-odalari-c-18021307"
+        },
+        {
+          "name": "mutfak",
+          "url": "https://www.hepsiburada.com/mutfak-mobilya-dekorasyon-c-18021304"
+        },
+        {
+          "name": "ofis_mobilyalari",
+          "url": "https://www.hepsiburada.com/ofis-dekorasyon-c-60004893"
+        },
+        {
+          "name": "bebek_odasi",
+          "url": "https://www.hepsiburada.com/bebek-odalari-c-60001284"
+        },
+        {
+          "name": "banyo_dolaplari",
+          "url": "https://www.hepsiburada.com/banyo-dolaplari-c-60003483"
+        },
+        {
+          "name": "cocuk_odasi",
+          "url": "https://www.hepsiburada.com/cocuk-odasi-c-80702000"
+        }
+      ]
+    }
+  ]
+}
