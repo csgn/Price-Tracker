@@ -1,15 +1,9 @@
 import os
-import sys
 import psycopg2 as ps2
+from psycopg2 import pool
 
-from colorama import Style, Fore
 
-from . import (
-    schemas as SCHEMAS,
-    insertions as INSERTIONS,
-    queries as QUERIES,
-    tables as TABLES
-)
+from . import insertions, tables, schemas, tables, queries
 
 connection = ps2.connect(os.environ["DATABASE_URI"])
 cursor = connection.cursor()

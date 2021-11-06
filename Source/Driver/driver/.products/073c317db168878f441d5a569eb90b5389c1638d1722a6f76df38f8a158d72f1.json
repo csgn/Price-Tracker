@@ -1,0 +1,80 @@
+{
+    "product name": "Apple MacBook Air M1 Çip 8GB 256GB SSD macOS 13\" QHD Taşınabilir Bilgisayar Altın MGND3TU/A",
+    "url": "https://www.hepsiburada.com/apple-macbook-air-m1-cip-8gb-256gb-ssd-macos-13-qhd-tasinabilir-bilgisayar-altin-mgnd3tu-a-p-hbv0000130vnh",
+    "brand": {
+        "name": "Apple",
+        "url": "https://www.hepsiburada.com/apple"
+    },
+    "price": "10.499,00 TL",
+    "rate": "5.0",
+    "images": [
+        "https://productimages.hepsiburada.net/s/49/550/10983950057522.jpg",
+        "https://productimages.hepsiburada.net/s/49/550/10983950090290.jpg",
+        "https://productimages.hepsiburada.net/s/49/550/10983950123058.jpg",
+        "https://productimages.hepsiburada.net/s/49/550/10983950155826.jpg",
+        "https://productimages.hepsiburada.net/s/49/550/10983950188594.jpg",
+        "https://productimages.hepsiburada.net/s/73/550/110000015075877.jpg"
+    ],
+    "supplier": [
+        {
+            "name": "Hepsiburada",
+            "rate": null,
+            "url": "https://www.hepsiburada.comjavascript:;",
+            "price": "10.499,00 TL"
+        },
+        {
+            "name": "CepteTek",
+            "rate": "9.7",
+            "url": "https://www.hepsiburada.com/magaza/ceptetek",
+            "price": "11.848,00 TL"
+        },
+        {
+            "name": "Alsambunu",
+            "rate": "9.9",
+            "url": "https://www.hepsiburada.com/magaza/alsambunu",
+            "price": "11.849,00 TL"
+        },
+        {
+            "name": "MondayBilisim",
+            "rate": "9.9",
+            "url": "https://www.hepsiburada.com/magaza/mondaybilisim",
+            "price": "11.899,00 TL"
+        },
+        {
+            "name": "Nethouse",
+            "rate": "10.0",
+            "url": "https://www.hepsiburada.com/magaza/nethouse",
+            "price": "11.999,00 TL"
+        },
+        {
+            "name": "NÖTRON",
+            "rate": "9.5",
+            "url": "https://www.hepsiburada.com/magaza/notron",
+            "price": "11.998,00 TL"
+        },
+        {
+            "name": "NEHİR GRUP",
+            "rate": "9.6",
+            "url": "https://www.hepsiburada.com/magaza/nehir-grup",
+            "price": "14.498,00 TL"
+        }
+    ],
+    "category": {
+        "name": "Bilgisayarlar",
+        "url": "https://www.hepsiburada.com/bilgisayarlar-c-2147483646"
+    },
+    "subcategory": [
+        {
+            "name": "Bilgisayarlar",
+            "url": "https://www.hepsiburada.com/bilgisayarlar-c-3000500"
+        },
+        {
+            "name": "Laptop & Notebook",
+            "url": "https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98"
+        },
+        {
+            "name": "Apple Laptop & Notebook",
+            "url": "https://www.hepsiburada.com/apple/laptop-notebook-dizustu-bilgisayarlar-c-98"
+        }
+    ]
+}

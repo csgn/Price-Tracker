@@ -1,29 +1,27 @@
-import os
 import sys
 import dotenv
 import threading
-import pprint
 import json
+import glob
 
-from colorama import Fore, Style
+from colorama import Fore
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 
 import fetch
+
 from parser import *
-from err import TableNotCreatedError
+from debug import ERROR, INFO
 
 DOTENV_PATH = sys.path[0] + '/config/.env'
-
 PRODUCTS_FOLDER = "./.products/"
 
-def worker(url: str):
-    content = fetch.get_content(url)
-    url_hash = fetch.get_hash(url)
 
+def parse(url: str, content: str):
+    url_hash = fetch.get_hash(url)
     parser = BeautifulSoup(content, "lxml")
 
-    print(Fore.YELLOW + "[INFO] " + Style.RESET_ALL + Fore.GREEN + url_hash + Style.RESET_ALL + " is being parsed")
+    INFO(url_hash, "is being parsed")
+
     product_name = PARSE__PRODUCT_NAME(parser)
     brand = PARSE__PRODUCT_BRAND(parser)
     price = PARSE__PRODUCT_PRICE(parser)
@@ -49,37 +47,55 @@ def worker(url: str):
         json.dump(resval, file, indent=4, ensure_ascii=False)
 
 
+def insert(product_file):
+    with open(product_file, "r") as fp:
+        product_json = json.load(fp)
+        db.insertions.insert_to_db(product_json)
+
+
 def get_urls():
     with open('./config/URLs', 'r') as file:
         return file.read().split()
 
+
 if __name__ == '__main__':
+    """ SET DATABASE CONFIG """
     dotenv.load_dotenv(DOTENV_PATH)
     import database as db
 
-    for table in list(db.TABLES.STATIC_TABLES.keys()):
+    """ CREATE TABLE IF NOT EXISTS """
+    for table, query in list(db.tables.STATIC_TABLES.items()):
         try:
-            if not db.QUERIES.TableIsExists(table):
-                db.QUERIES.CreateNewTable(db.TABLES.STATIC_TABLES[table])
-                print(Fore.YELLOW + "[INFO] " + Style.RESET_ALL + Fore.GREEN + table + Style.RESET_ALL + " is being created")
+            if not db.queries.TableIsExists(table):
+                db.queries.CreateNewTable(query)
+                INFO(table, "is being created")
             else:
-                print(Fore.YELLOW + "[INFO] " + Style.RESET_ALL + Fore.GREEN + table + Style.RESET_ALL + " already exists")
+                INFO(table, "already exists", tc=Fore.MAGENTA)
 
-        except TableNotCreatedError:
-            print(Fore.RED + "[INFO] " + Style.RESET_ALL + Fore.GREEN + table + Style.RESET_ALL + " not created")
+        except Exception as e:
+            ERROR(e.__str__())
+            INFO(table, "not created", tc=Fore.RED)
 
-    
+    """ FETCH CONTENT FROM URL/CACHE and PARSE CONTENT to JSON """
     workers = []
     urls = get_urls()
-    for url in tqdm(urls):
-        worker(url)
-        tid = threading.Thread(target=worker, args=(url,))
+
+    for url in urls:
+        content = fetch.get_content(url)
+        tid = threading.Thread(target=parse, args=(url, content,))
         workers.append(tid)
         tid.start()
 
     for tid in workers:
-        tid.join()
         fetch.driver.quit()
+        tid.join()
 
-    
+    """ INSERT TO DATABASE from JSON FILE """
+    products = glob.glob(PRODUCTS_FOLDER + "*.json")
+    for product in products:
+        INFO(product.split(PRODUCTS_FOLDER)[1].split(
+            '.json')[0], "is being inserted to database")
+        insert(product)
 
+    db.cursor.close()
+    db.connection.close()

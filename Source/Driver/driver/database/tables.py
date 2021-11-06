@@ -33,10 +33,7 @@ CREATE TABLE IF NOT EXISTS Brand (
     BrandID serial,
     Name varchar(255) not null,
     URL varchar(255) not null,
-    RateID int not null,
-    PRIMARY KEY (BrandID),
-    FOREIGN KEY (RateID)
-        REFERENCES Rate (RateID)
+    PRIMARY KEY (BrandID)
 );
 """
 
@@ -97,13 +94,9 @@ CREATE TABLE IF NOT EXISTS CategoryOwnedBySupplier (
 
 __categoryownedbybrand = """
 CREATE TABLE IF NOT EXISTS CategoryOwnedByBrand (
-    BrandID int,
-    CategoryID int,
-    PRIMARY KEY (CategoryID, BrandID),
-    FOREIGN KEY (CategoryID)
-        REFERENCES Category (CategoryID),
-    FOREIGN KEY (BrandID)
-        REFERENCES Brand (BrandID)
+    CategoryID int REFERENCES Category,
+    BrandID int REFERENCES Brand,
+    PRIMARY KEY (CategoryID, BrandID)
 );
 """
 
