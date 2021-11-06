@@ -21,6 +21,8 @@ def __INSERT__PRODUCT(*args) -> None:
     rateid, brandid, priceid, categoryid, name, url, images = args[0]
     images = '{' + ",".join(f'"{image}"' for image in images) + '}'
 
+    name = name.replace("'", "")
+
     db.cursor.execute(f"""
     INSERT INTO product (name, images, url, rateid, priceid, brandid, categoryid)
         VALUES (
@@ -40,6 +42,7 @@ def __INSERT__PRODUCT(*args) -> None:
 def __INSERT__BRAND(brand) -> None:
     name, url = brand.values()
 
+    name = name.replace("'", "")
     db.cursor.execute(f"""
     INSERT INTO brand (name, url)
         VALUES (
@@ -82,6 +85,7 @@ def __INSERT__RATE(rate: str) -> None:
 @getid
 def __INSERT__SUPPLIER(supplier) -> None:
     name, rate, url, _ = supplier.values()
+    name = name.replace("'", "")
 
     db.cursor.execute(f"""
     INSERT INTO supplier (name, rateid, url)
@@ -98,6 +102,7 @@ def __INSERT__SUPPLIER(supplier) -> None:
 def __INSERT__CATEGORY(*args) -> None:
     category, subcategories_id = args[0]
     name, url = category.values()
+    name = name.replace("'", "")
 
     for subcategoryid in subcategories_id:
         db.cursor.execute(f"""
@@ -114,6 +119,7 @@ def __INSERT__CATEGORY(*args) -> None:
 @getid
 def __INSERT__SUBCATEGORY(subcategory) -> None:
     name, url = subcategory.values()
+    name = name.replace("'", "")
 
     db.cursor.execute(f"""
     INSERT INTO subcategory (name, url)
