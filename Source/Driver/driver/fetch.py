@@ -71,5 +71,4 @@ def get_content(url: str, cached_content: str = None) -> str:
     else:
         return cached_content
 
-
 driver = get_driver()
