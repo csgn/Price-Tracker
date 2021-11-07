@@ -1,10 +1,10 @@
-import database as db
+import conf.database as db
 
 
 def TableIsExists(table: str):
     db.cursor.execute(f"""
         select exists(select relname from pg_class
-                where relname='{table.lower()}')
+            where relname='{table.lower()}')
     """)
 
     return db.cursor.fetchone()[0]

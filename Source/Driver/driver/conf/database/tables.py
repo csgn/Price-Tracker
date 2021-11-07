@@ -1,30 +1,20 @@
-__subcategory = """
-CREATE TABLE IF NOT EXISTS Subcategory (
-    SubcategoryID serial,
-    Name varchar(255) not null,
-    URL varchar(255) not null,
-    PRIMARY KEY (SubcategoryID)
-);
-"""
-
 __category = """
 CREATE TABLE IF NOT EXISTS Category (
     CategoryID serial,
     Name varchar(255) not null,
     URL varchar(255) not null,
-    SubcategoryID int not null,
-    PRIMARY KEY (CategoryID),
-    FOREIGN KEY (SubcategoryID)
-        REFERENCES Subcategory (SubcategoryID)
+    PRIMARY KEY (CategoryID)
 );
 """
-
-__rate = """
-CREATE TABLE IF NOT EXISTS Rate (
-    RateID serial,
-    Score float,
-    Date timestamp not null,
-    PRIMARY KEY (RateID)
+__subcategory = """
+CREATE TABLE IF NOT EXISTS Subcategory (
+    SubcategoryID serial,
+    Name varchar(255) not null,
+    URL varchar(255) not null,
+    CategoryID int not null,
+    PRIMARY KEY (SubcategoryID),
+    FOREIGN KEY (CategoryID)
+        REFERENCES Category (CategoryID)
 );
 """
 
@@ -41,11 +31,9 @@ __supplier = """
 CREATE TABLE IF NOT EXISTS Supplier (
     SupplierID serial,
     Name varchar(255) not null,
+    Rate float,
     URL varchar(255) not null,
-    RateID int not null,
-    PRIMARY KEY (SupplierID),
-    FOREIGN KEY (RateID)
-        REFERENCES Rate (RateID)
+    PRIMARY KEY (SupplierID)
 );
 """
 
@@ -54,6 +42,9 @@ CREATE TABLE IF NOT EXISTS Price (
     PriceID serial,
     Amount float,
     StartDate timestamp not null,
+    SupplierID int not null,
+    FOREIGN KEY (SupplierID)
+        REFERENCES Supplier (SupplierID),
     PRIMARY KEY (PriceID)
 );
 """
@@ -63,95 +54,105 @@ CREATE TABLE IF NOT EXISTS Product (
     ProductID serial,
     Name varchar(255) not null,
     Images varchar(255) array,
+    Rate float,
     URL varchar(255) not null,
-    RateID int not null,
-    PriceID int not null,
     BrandID int not null,
     CategoryID int not null,
-    PRIMARY KEY (ProductID),
-    FOREIGN KEY (RateID)
-        REFERENCES Rate (RateID),
-    FOREIGN KEY (PriceID)
-        REFERENCES Price (PriceID),
     FOREIGN KEY (BrandID)
         REFERENCES Brand (BrandID),
     FOREIGN KEY (CategoryID)
-        REFERENCES Category (CategoryID)
+        REFERENCES Category (CategoryID),
+    PRIMARY KEY (ProductID)
 );
 """
 
 __categoryownedbysupplier = """
 CREATE TABLE IF NOT EXISTS CategoryOwnedBySupplier (
-    SupplierID int,
-    CategoryID int,
-    PRIMARY KEY (SupplierID, CategoryID),
+    SupplierID int not null,
+    CategoryID int not null,
     FOREIGN KEY (SupplierID)
         REFERENCES Supplier(SupplierID),
     FOREIGN KEY (CategoryID)
-        REFERENCES Category (CategoryID)
+        REFERENCES Category (CategoryID),
+    PRIMARY KEY (SupplierID, CategoryID)
 );
 """
 
 __categoryownedbybrand = """
 CREATE TABLE IF NOT EXISTS CategoryOwnedByBrand (
-    CategoryID int REFERENCES Category,
-    BrandID int REFERENCES Brand,
-    PRIMARY KEY (CategoryID, BrandID)
+    BrandID int not null,
+    CategoryID int not null,
+    FOREIGN KEY (BrandID)
+        REFERENCES Brand (BrandID),
+    FOREIGN KEY (CategoryID)
+        REFERENCES Category (CategoryID),
+    PRIMARY KEY (BrandID, CategoryID)
 );
 """
 
 __productownedbysupplier = """
 CREATE TABLE IF NOT EXISTS ProductOwnedBySupplier (
-    ProductID int,
-    SupplierID int,
-    PRIMARY KEY (ProductID, SupplierID),
+    SupplierID int not null,
+    ProductID int not null,
+    FOREIGN KEY (SupplierID)
+        REFERENCES Supplier (SupplierID),
     FOREIGN KEY (ProductID)
         REFERENCES Product (ProductID),
-    FOREIGN KEY (SupplierID)
-        REFERENCES Supplier (SupplierID)
+    PRIMARY KEY (SupplierID, ProductID)
 );
 """
 
 __subcategoryownedbysupplier = """
 CREATE TABLE IF NOT EXISTS SubcategoryOwnedBySupplier (
-    SupplierID int,
-    SubcategoryID int,
-    PRIMARY KEY (SupplierID, SubcategoryID),
+    SupplierID int not null,
+    SubcategoryID int not null,
     FOREIGN KEY (SupplierID)
         REFERENCES Supplier (SupplierID),
     FOREIGN KEY (SubcategoryID)
-        REFERENCES Subcategory (SubcategoryID)
+        REFERENCES Subcategory (SubcategoryID),
+    PRIMARY KEY (SupplierID, SubcategoryID)
 );
 """
 
 __productownedbysubcategory = """
 CREATE TABLE IF NOT EXISTS ProductOwnedBySubcategory (
-    ProductID int,
-    SubcategoryID int,
-    PRIMARY KEY (ProductID, SubcategoryID),
+    SubcategoryID int not null,
+    ProductID int not null,
     FOREIGN KEY (ProductID)
         REFERENCES Product (ProductID),
     FOREIGN KEY (SubcategoryID)
-        REFERENCES Subcategory (SubcategoryID)
+        REFERENCES Subcategory (SubcategoryID),
+    PRIMARY KEY (SubcategoryID, ProductID)
 );
 """
 
 __subcategoryownedbybrand = """
 CREATE TABLE IF NOT EXISTS SubcategoryOwnedByBrand (
-    SubcategoryID int,
-    BrandID int,
-    PRIMARY KEY (SubcategoryID, BrandID),
+    BrandID int not null,
+    SubcategoryID int not null,
     FOREIGN KEY (SubcategoryID)
         REFERENCES Subcategory (SubcategoryID),
     FOREIGN KEY (BrandID)
-        REFERENCES Brand (BrandID)
+        REFERENCES Brand (BrandID),
+    PRIMARY KEY (BrandID, SubcategoryID)
+);
+"""
+
+__brandownedbysupplier = """
+CREATE TABLE IF NOT EXISTS BrandOwnedBySupplier (
+    SupplierID int not null,
+    BrandID int not null,
+    FOREIGN KEY (SupplierID)
+        REFERENCES Supplier (SupplierID),
+    FOREIGN KEY (BrandID)
+        REFERENCES Brand (BrandID),
+    PRIMARY KEY (SupplierID, BrandID)
 );
 """
 
 STATIC_TABLES = {
-    "Subcategory": __subcategory,
     "Category": __category,
-    "Rate": __rate,
+    "Subcategory": __subcategory,
     "Brand": __brand,
     "Supplier": __supplier,
     "Price": __price,
@@ -162,4 +163,5 @@ STATIC_TABLES = {
     "ProductOwnedBySubcategory": __productownedbysubcategory,
     "SubcategoryOwnedByBrand": __subcategoryownedbybrand,
     "SubcategoryOwnedBySupplier": __subcategoryownedbysupplier,
+    "BrandOwnedBySupplier": __brandownedbysupplier,
 }

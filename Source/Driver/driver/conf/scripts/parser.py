@@ -1,53 +1,59 @@
-import os
+import json
 from bs4 import BeautifulSoup
+
+import conf.global_settings as settings
+import conf.scripts.hash as hash
+import conf.logger as log
 
 DOMAIN = 'https://www.hepsiburada.com'
 
 
-def PARSE__PRODUCT_NAME(parser: BeautifulSoup):
+def __PARSE__PRODUCT_NAME(parser: BeautifulSoup):
     header__title_wrapper = parser.find("header", class_="title-wrapper")
     span__product_name = header__title_wrapper.find(
         "span", class_="product-name")
-    product_name = span__product_name.text.strip()
+    product_name = span__product_name.text.strip().replace('\'', '`')
 
     return product_name
 
 
-def PARSE__PRODUCT_BRAND(parser: BeautifulSoup):
+def __PARSE__PRODUCT_BRAND(parser: BeautifulSoup):
     span__brand_name = parser.find("span", class_="brand-name")
-    brand_name = span__brand_name.text.strip()
+    brand_name = span__brand_name.text.strip().replace('\'', '`')
     a__href = span__brand_name.find("a", href=True)["href"]
     brand_url = DOMAIN + a__href
 
     return {
         'name': brand_name,
-        'url': brand_url,
+        'url': brand_url.strip().split('javascript:;')[0],
     }
 
 
-def PARSE__PRODUCT_PRICE(parser: BeautifulSoup):
+def __PARSE__PRODUCT_PRICE(parser: BeautifulSoup):
     div__product_price_wrapper = parser.find(
         "div", class_="product-price-wrapper")
     try:
-        span__price = div__product_price_wrapper.find("span", class_="price")
-        price = span__price.text.split()
+        span__price = div__product_price_wrapper.findAll(
+            "span", class_="price")
+        price = float(span__price[0]["content"])
+
     except AttributeError:
         price = None
 
-    return price
+    return price if price != 0.0 else None
 
 
-def PARSE__PRODUCT_RATE(parser: BeautifulSoup):
+def __PARSE__PRODUCT_RATE(parser: BeautifulSoup):
     span__rating_star = parser.find("span", class_="rating-star")
     try:
         rate = span__rating_star.text.strip().replace(',', '.')
     except AttributeError:
         rate = None
 
-    return rate
+    return rate if rate is None else float(rate)
 
 
-def PARSE__PRODUCT_IMAGES(parser: BeautifulSoup):
+def __PARSE__PRODUCT_IMAGES(parser: BeautifulSoup):
     div__product_details_carousel = parser.find(
         "div", id="productDetailsCarousel")
     picture__itemprop_images = div__product_details_carousel.findAll(
@@ -66,7 +72,7 @@ def PARSE__PRODUCT_IMAGES(parser: BeautifulSoup):
     return images
 
 
-def PARSE__PRODUCT_SUPPLIER(parser: BeautifulSoup):
+def __PARSE__PRODUCT_SUPPLIER(parser: BeautifulSoup):
     div__tab_merchant = parser.find("div", id="tabMerchant")
     table__merchant_list = div__tab_merchant.find("table", id="merchant-list")
     tr__merchant_list_items = table__merchant_list.findAll(
@@ -94,23 +100,25 @@ def PARSE__PRODUCT_SUPPLIER(parser: BeautifulSoup):
         merchant_name = span__merchant_name.text.strip()
 
         # Get price of product of supplier
-        span__price_value = tr__merchant_list_item.find("span", class_="price")
-        price = span__price_value.text.strip().split()
+        span__price = tr__merchant_list_item.findAll(
+            "span", class_="price")
+        price = float(span__price[0].text.split()[
+                      0].replace('.', '').replace(',', '.'))
 
         # Get URL of supplier
         merchant_url = DOMAIN + a__merchant_name["href"]
 
         merchants.append({
-            "name": merchant_name,
-            "rate": rate,
-            "url": merchant_url,
-            "price": " ".join(price),
+            "name": merchant_name.replace('\'', '`'),
+            "rate": rate if rate is None else float(rate),
+            "url": merchant_url.strip().split('javascript:;')[0],
+            "price": price if price != 0.0 else None,
         })
 
     return merchants
 
 
-def PARSE__PRODUCT_CATEGORY(parser: BeautifulSoup):
+def __PARSE__PRODUCT_CATEGORY(parser: BeautifulSoup):
     ul__breadcrumbs = parser.find("ul", class_="breadcrumbs")
     li__itemprop = ul__breadcrumbs.findAll("li", itemprop="itemListElement")[1]
     a__itemprop = li__itemprop.find("a", itemprop="item", href=True)
@@ -126,7 +134,7 @@ def PARSE__PRODUCT_CATEGORY(parser: BeautifulSoup):
     return category
 
 
-def PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
+def __PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
     ul__breadcrumbs = parser.find("ul", class_="breadcrumbs")
     li__itemprops = ul__breadcrumbs.findAll(
         "li", itemprop="itemListElement")[2:]
@@ -140,7 +148,43 @@ def PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
 
         subcategories.append({
             "name": subcategory_name,
-            "url": subcategory_url,
+            "url": subcategory_url.strip().split('javascript:;')[0],
         })
 
     return subcategories
+
+
+def parse(url: str, content: str):
+    url_hash = hash.get_hash(url)
+    parser = BeautifulSoup(content, "lxml")
+
+    log.info(url_hash, "is being parsed")
+
+    try:
+        product_name = __PARSE__PRODUCT_NAME(parser)
+        brand = __PARSE__PRODUCT_BRAND(parser)
+        price = __PARSE__PRODUCT_PRICE(parser)
+        rate = __PARSE__PRODUCT_RATE(parser)
+        images = __PARSE__PRODUCT_IMAGES(parser)
+        supplier = __PARSE__PRODUCT_SUPPLIER(parser)
+        category = __PARSE__PRODUCT_CATEGORY(parser)
+        subcategory = __PARSE__PRODUCT_SUBCATEGORY(parser)
+    except Exception as e:
+        log.error(url_hash, "is corrupted")
+        # os.remove(fetch.CACHE_FOLDER + url_hash)
+        return
+
+    resval = {
+        "product name": product_name,
+        "url": url.strip().split('javascript:;')[0],
+        "brand": brand,
+        "price": price,
+        "rate": rate,
+        "images": images,
+        "supplier": supplier,
+        "category": category,
+        "subcategory": subcategory,
+    }
+
+    with open(settings.PRODUCTS_FOLDER + url_hash + '.json', "w+", encoding='utf8') as file:
+        json.dump(resval, file, indent=4, ensure_ascii=False)
