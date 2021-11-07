@@ -295,9 +295,7 @@ def insert(other):
     name = other["product name"]
     url = other["url"]
     rate = other["rate"]
-
     images = '{' + ",".join(f'"{image}"' for image in other["images"]) + '}'
-
     brandid = __INSERT__BRAND(other["brand"])
     categoryid = __INSERT__CATEGORY(other["category"])
 

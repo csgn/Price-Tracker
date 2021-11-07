@@ -1,3 +1,4 @@
+import os
 import json
 from bs4 import BeautifulSoup
 
@@ -171,7 +172,7 @@ def parse(url: str, content: str):
         subcategory = __PARSE__PRODUCT_SUBCATEGORY(parser)
     except Exception as e:
         log.error(url_hash, "is corrupted")
-        # os.remove(fetch.CACHE_FOLDER + url_hash)
+        os.remove(settings.CACHE_FOLDER + url_hash)
         return
 
     resval = {
