@@ -1,10 +1,6 @@
-import sys
-import dotenv
 import threading
 import json
 import glob
-
-from bs4 import BeautifulSoup
 
 import conf.global_settings as settings
 import conf.database as db
@@ -59,7 +55,8 @@ def main():
 
             log.info(content_file, "is inserted to database")
         except Exception as e:
-            log.error(content_file, "is not inserted to database\n" + e)
+            print(e)
+            log.error(content_file, "is not inserted to database")
 
     driver.driver.quit()
     db.cursor.close()

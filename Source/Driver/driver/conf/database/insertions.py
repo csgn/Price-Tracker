@@ -1,341 +1,118 @@
-import conf.global_settings as settings
 import conf.database as db
 from conf.scripts.altcursor import AlterCursor
 import conf.scripts.time as time
 
 
-def __getid(fun) -> int:
-    def wrapper(*args):
-        res = fun(args if len(args) > 1 else args[0])
-        return db.cursor.fetchone()[0] if not res else res
+def __INSERT_RELATION__(*args, **kwargs):
+    id1_name, id2_name = args[0].keys()
+    id1, id2 = args[0].values()
+    table = list(kwargs.values())[0]
 
-    return wrapper
+    with AlterCursor() as altcur:
+        altcur.cursor.execute(f"""
+            SELECT {id1_name}, {id2_name} from {table}
+                WHERE ({id1_name}={id1} and {id2_name}={id2});
+        """)
+        res = altcur.fetch()
+
+    if not res:
+        db.cursor.execute(f"""
+            INSERT INTO {table} ({id1_name}, {id2_name})
+                VALUES (
+                    {id1},
+                    {id2}
+                )
+        """)
 
 
-@__getid
-def __INSERT__PRODUCT(*args) -> None:
-    product = args[0]
-    name, images, url, rate, brandid, categoryid = product.values()
+def __INSERT_ROW__(*, attrs, table, isdistinct=None):
+    keys, values = list(attrs.keys()), list(attrs.values())
+
+    res = None
+    if isdistinct:
+        with AlterCursor() as altcur:
+            altcur.cursor.execute(f"""
+                SELECT {isdistinct['row']} from {table}
+                    WHERE url='{attrs['url']}'
+            """)
+            res = altcur.fetch()
+
+    if res:
+        return res
+
+    q = ""
+    for i in values:
+        if type(i) is str and i != 'null' and "startdate" not in keys:
+            q += f"'{i}'"
+        else:
+            q += str(i)
+        q += ','
+
+    q = q[:-1]
 
     db.cursor.execute(f"""
-    INSERT INTO product (name, images, url, rate, brandid, categoryid)
-        VALUES (
-            '{name}',
-            '{images}',
-            '{url}',
-            {'null' if rate is None else rate},
-            {brandid},
-            {categoryid}
-        )
-        RETURNING productid;
+        INSERT INTO {table} ({",".join(keys)})
+            VALUES (
+                {q}
+            )
+            RETURNING {table + 'id'};
     """)
 
-
-@__getid
-def __INSERT__BRAND(*args) -> int:
-    brand = args[0]
-    name, url = brand.values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT brandid from brand
-            WHERE url='{url}'
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-        INSERT INTO brand (name, url)
-            VALUES (
-                '{name}',
-                '{url}'
-            )
-            RETURNING brandid;
-        """)
-    else:
-        return res
-
-
-@__getid
-def __INSERT__PRICE(*args) -> None:
-    price = args[0]
-    supplierid, amount = price.values()
-    current_date = time.now()
-
-    db.cursor.execute(f"""
-    INSERT INTO price (amount, startdate, supplierid)
-        VALUES (
-            '{amount}',
-            to_timestamp('{current_date}', 'yyyy-mm-dd hh24:mi:ss'),
-            {supplierid}
-        )
-        RETURNING priceid;
-    """)
-
-
-@__getid
-def __INSERT__SUPPLIER(*args) -> int:
-    supplier = args[0]
-    name, rate, url, _ = supplier.values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT supplierid from supplier
-                WHERE url='{url}'
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-        INSERT INTO supplier (name, rate, url)
-            VALUES (
-                '{name}',
-                {'null' if rate is None else rate},
-                '{url}'
-            )
-            RETURNING supplierid;
-        """)
-    else:
-        return res
-
-
-@__getid
-def __INSERT__CATEGORY(*args) -> None:
-    category = args[0]
-    name, url = category.values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT categoryid from category
-                WHERE url='{url}';
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO category (name, url)
-                VALUES (
-                    '{name}',
-                    '{url}'
-            )
-            RETURNING categoryid;
-        """)
-    else:
-        return res
-
-
-@__getid
-def __INSERT__SUBCATEGORY(*args) -> None:
-    subcategory = args[0]
-    name, url, categoryid = subcategory.values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT subcategoryid from subcategory
-                WHERE url='{url}';
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO subcategory (name, url, categoryid)
-                VALUES (
-                    '{name}',
-                    '{url}',
-                    {categoryid}
-                )
-                RETURNING subcategoryid;
-        """)
-    else:
-        return res
-
-
-def __INSERT__CATEGORYOWNEDBYBRAND(*args) -> None:
-    brandid, categoryid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT brandid, categoryid from categoryownedbybrand
-                WHERE (brandid={brandid} and categoryid={categoryid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO categoryownedbybrand (brandid, categoryid)
-                VALUES (
-                    {brandid},
-                    {categoryid}
-                )
-        """)
-
-
-def __INSERT__CATEGORYOWNEDBYSUPPLIER(*args):
-    supplierid, categoryid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT supplierid, categoryid from categoryownedbysupplier
-                WHERE (supplierid={supplierid} and categoryid={categoryid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO categoryownedbysupplier (supplierid, categoryid)
-                VALUES (
-                    {supplierid},
-                    {categoryid}
-                )
-        """)
-
-
-def __INSERT__BRANDOWNEDBYSUPPLIER(*args):
-    supplierid, brandid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT supplierid, brandid from brandownedbysupplier
-                WHERE (supplierid={supplierid} and brandid={brandid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO brandownedbysupplier (supplierid, brandid)
-                VALUES (
-                    {supplierid},
-                    {brandid}
-                )
-        """)
-
-
-def __INSERT__PRODUCTOWNEDBYSUPPLIER(*args):
-    supplierid, productid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT supplierid, productid from productownedbysupplier
-                WHERE (supplierid={supplierid} and productid={productid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO productownedbysupplier (supplierid, productid)
-                VALUES (
-                    {supplierid},
-                    {productid}
-                )
-        """)
-
-
-def __INSERT__PRODUCTOWNEDBYSUBCATEGORY(*args):
-    subcategoryid, productid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT subcategoryid, productid from productownedbysubcategory
-                WHERE (subcategoryid={subcategoryid} and productid={productid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO productownedbysubcategory (subcategoryid, productid)
-                VALUES (
-                    {subcategoryid},
-                    {productid}
-                )
-        """)
-
-
-def __INSERT__SUBCATEGORYOWNEDBYSUPPLIER(*args):
-    supplierid, subcategoryid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT supplierid, subcategoryid from subcategoryownedbysupplier
-                WHERE (supplierid={supplierid} and subcategoryid={subcategoryid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO subcategoryownedbysupplier (supplierid, subcategoryid)
-                VALUES (
-                    {supplierid},
-                    {subcategoryid}
-                )
-        """)
-
-
-def __INSERT__SUBCATEGORYOWNEDBYBRAND(*args):
-    brandid, subcategoryid = args[0].values()
-
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
-            SELECT brandid, subcategoryid from subcategoryownedbybrand 
-                WHERE (brandid={brandid} and subcategoryid={subcategoryid});
-        """)
-        res = altcur.fetch()
-
-    if not res:
-        db.cursor.execute(f"""
-            INSERT INTO subcategoryownedbybrand (brandid, subcategoryid)
-                VALUES (
-                    {brandid},
-                    {subcategoryid}
-                )
-        """)
-    pass
+    return db.cursor.fetchone()[0]
 
 
 def insert(other):
     name = other["product name"]
     url = other["url"]
-    rate = other["rate"]
+    rate = "null" if other["rate"] is None else other["rate"]
     images = '{' + ",".join(f'"{image}"' for image in other["images"]) + '}'
-    brandid = __INSERT__BRAND(other["brand"])
-    categoryid = __INSERT__CATEGORY(other["category"])
 
-    __INSERT__CATEGORYOWNEDBYBRAND(
-        {"brandid": brandid, "categoryid": categoryid})
+    brandid = __INSERT_ROW__(attrs=other["brand"], table="brand", isdistinct={
+        "row": "brandid"})
 
-    productid = __INSERT__PRODUCT({
-        "name": name,
-        "images": images,
-        "url": url,
-        "rate": rate,
-        "brandid": brandid,
-        "categoryid": categoryid
-    })
+    categoryid = __INSERT_ROW__(attrs=other["category"], table="category", isdistinct={
+        "row": "categoryid"})
+
+    __INSERT_RELATION__(
+        {"brandid": brandid, "categoryid": categoryid}, table="categoryownedbybrand")
+
+    productid = __INSERT_ROW__(attrs={
+        "name": name, "images": images, "url": url,
+        "rate": rate, "brandid": brandid,
+        "categoryid": categoryid}, table="product")
 
     supplierids = []
     for supplier in other["supplier"]:
-        supplierid = __INSERT__SUPPLIER(supplier)
-        priceid = __INSERT__PRICE(
-            {"supplierid": supplierid, "amount": supplier["price"]})
+        supplier_price = supplier['price']
+        del supplier['price']
 
-        __INSERT__BRANDOWNEDBYSUPPLIER(
-            {"supplierid": supplierid, "brandid": brandid})
-        __INSERT__CATEGORYOWNEDBYSUPPLIER(
-            {"supplierid": supplierid, "categoryid": categoryid})
-        __INSERT__PRODUCTOWNEDBYSUPPLIER(
-            {"supplierid": supplierid, "productid": productid})
+        supplier["rate"] = "null" if supplier["rate"] is None else supplier["rate"]
+        supplierid = __INSERT_ROW__(attrs=supplier, table="supplier", isdistinct={
+            "row": "supplierid"})
 
+        priceid = __INSERT_ROW__(
+            attrs={"amount": supplier_price, "startdate": f"to_timestamp('{time.now()}', 'yyyy-mm-dd hh24:mi:ss')", "supplierid": supplierid}, table="price")
+
+        __INSERT_RELATION__(
+            {"supplierid": supplierid, "brandid": brandid}, table="brandownedbysupplier")
+
+        __INSERT_RELATION__(
+            {"supplierid": supplierid, "categoryid": categoryid}, table="categoryownedbysupplier")
+
+        __INSERT_RELATION__(
+            {"supplierid": supplierid, "productid": productid}, table="productownedbysupplier")
         supplierids.append(supplierid)
 
     for subcategory in other["subcategory"]:
-        subcategoryid = __INSERT__SUBCATEGORY(
-            {**subcategory, "categoryid": categoryid})
-        __INSERT__SUBCATEGORYOWNEDBYBRAND(
-            {"brandid": brandid, "subcategoryid": subcategoryid})
-        __INSERT__PRODUCTOWNEDBYSUBCATEGORY(
-            {"subcategoryid": subcategoryid, "productid": productid})
+        subcategoryid = __INSERT_ROW__(attrs={**subcategory, "categoryid": categoryid}, table="subcategory", isdistinct={
+            "row": "subcategoryid"})
 
+        __INSERT_RELATION__(
+            {"brandid": brandid, "subcategoryid": subcategoryid}, table="subcategoryownedbybrand")
+
+        __INSERT_RELATION__(
+            {"subcategoryid": subcategoryid, "productid": productid}, table="productownedbysubcategory")
         for supplierid in supplierids:
-            __INSERT__SUBCATEGORYOWNEDBYSUPPLIER(
-                {"supplierid": supplierid, "subcategoryid": subcategoryid})
-
+            __INSERT_RELATION__(
+                {"supplierid": supplierid, "subcategoryid": subcategoryid}, table="subcategoryownedbysupplier")
     db.connection.commit()
