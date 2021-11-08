@@ -6,7 +6,7 @@ import conf.global_settings as settings
 import conf.scripts.hash as hash
 import conf.logger as log
 
-DOMAIN = 'https://www.hepsiburada.com'
+DOMAIN = os.environ["URL_DOMAIN"]
 
 
 def __PARSE__PRODUCT_NAME(parser: BeautifulSoup):
