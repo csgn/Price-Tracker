@@ -5,7 +5,7 @@ from colorama import Fore, Back, Style
 
 def info(var, message):
     print(
-        f"{time.now()} - {Fore.LIGHTBLUE_EX + '[INFO]' + Style.RESET_ALL}{'':>2}:\t{Fore.LIGHTWHITE_EX + var + Style.RESET_ALL + ' ' + message.capitalize()}")
+        f"{time.now()} - {Fore.LIGHTBLUE_EX + '[INFO]' + Style.RESET_ALL}{'':>1}:\t{Fore.LIGHTWHITE_EX + var + Style.RESET_ALL + ' ' + message.capitalize()}")
 
 
 def warning(var, message):
