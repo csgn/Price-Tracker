@@ -15,10 +15,10 @@ def __is_cached(fun):
         content_file = hash.get_hash(url)
 
         if not os.path.exists(settings.CACHE_FOLDER + content_file):
-            log.info(content_file, "not found in cache")
+            log.warning(content_file, "not found in cache", fore=log.Fore.RED)
             return fun(url=args[0])
 
-        log.info(content_file, "found in cache")
+        log.info(content_file, "found in cache", fore=log.Fore.LIGHTGREEN_EX)
 
         cached_content = ""
         with open(settings.CACHE_FOLDER + content_file, "r") as content:
@@ -46,7 +46,7 @@ def get(url: str, cached_content: str = None) -> str:
     content_file = hash.get_hash(url)
 
     if not cached_content:
-        log.info(content_file, "fetching...")
+        log.info(content_file, "fetching...", fore=log.Fore.LIGHTMAGENTA_EX)
         driver.driver.get(url)
 
         content = driver.driver.page_source
@@ -55,6 +55,7 @@ def get(url: str, cached_content: str = None) -> str:
             log.warning(content_file, "is not saved")
             pass
         else:
+            log.info(content_file, "was fetched", fore=log.Fore.LIGHTGREEN_EX)
             return content
     else:
         return cached_content

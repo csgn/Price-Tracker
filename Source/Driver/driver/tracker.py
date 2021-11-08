@@ -1,3 +1,4 @@
+import sys
 import threading
 import json
 import glob
@@ -23,10 +24,13 @@ def main():
                 log.info(table, "is being created")
                 db.queries.CreateNewTable(query)
             else:
-                log.info(table, "is already exists")
+                log.info(table, "is already exists",
+                         fore=log.Fore.LIGHTBLUE_EX)
 
         except Exception as e:
-            log.error(table, "is not created")
+            print(e)
+            log.error(table, "is not created", fore=log.Fore.LIGHTRED_EX)
+            sys.exit(0)
 
     """ FETCH CONTENT FROM URL/CACHE and PARSE CONTENT to JSON """
     workers = []
@@ -53,10 +57,11 @@ def main():
             with open(product, "r") as other:
                 db.insertions.insert(json.load(other))
 
-            log.info(content_file, "is inserted to database")
+            log.info(content_file, "was inserted to database",
+                     fore=log.Fore.LIGHTGREEN_EX)
         except Exception as e:
             print(e)
-            log.error(content_file, "is not inserted to database")
+            log.error(content_file, "was not inserted to database")
 
     driver.driver.quit()
     db.cursor.close()
