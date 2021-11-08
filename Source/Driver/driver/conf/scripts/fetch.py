@@ -1,5 +1,8 @@
 import os
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 import conf.global_settings as settings
 import conf.webdriver as driver
 import conf.scripts.hash as hash
@@ -43,8 +46,7 @@ def get(url: str, cached_content: str = None) -> str:
     content_file = hash.get_hash(url)
 
     if not cached_content:
-        log.info(content_file, "is being fetched")
-
+        log.info(content_file, "fetching...")
         driver.driver.get(url)
 
         content = driver.driver.page_source
