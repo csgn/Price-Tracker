@@ -8,15 +8,11 @@ import conf.database as db
 import conf.webdriver as driver
 import conf.scripts.fetch as fetch
 import conf.scripts.parser as parse
+import conf.scripts.util as util
 import conf.logger as log
 
 
-def get_urls():
-    with open(settings.URLS_FOLDER, 'r') as file:
-        return file.read().split()
-
-
-def main():
+def main(argv):
     """ CREATE TABLE IF NOT EXISTS """
     for table, query in list(db.tables.STATIC_TABLES.items()):
         try:
@@ -34,7 +30,7 @@ def main():
 
     """ FETCH CONTENT FROM URL/CACHE and PARSE CONTENT to JSON """
     workers = []
-    urls = get_urls()
+    urls = util.get_urls()
 
     for url in urls:
         content = fetch.get(url)

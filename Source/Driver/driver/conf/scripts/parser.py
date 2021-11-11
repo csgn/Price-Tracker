@@ -3,7 +3,7 @@ import json
 from bs4 import BeautifulSoup
 
 import conf.global_settings as settings
-import conf.scripts.hash as hash
+import conf.scripts.util as util
 import conf.logger as log
 
 DOMAIN = os.environ["URL_DOMAIN"]
@@ -156,7 +156,7 @@ def __PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
 
 
 def parse(url: str, content: str):
-    url_hash = hash.get_hash(url)
+    url_hash = util.get_hash(url)
     parser = BeautifulSoup(content, "lxml")
 
     log.info(url_hash, "is being parsed")

@@ -1,4 +1,5 @@
 import os
+import sys
 import dotenv
 
 import conf.global_settings as settings
@@ -13,4 +14,4 @@ if __name__ == "__main__":
     if not os.path.exists(settings.PRODUCTS_FOLDER):
         os.makedirs(settings.PRODUCTS_FOLDER)
 
-    __import__("tracker").main()
+    __import__("tracker").main(sys.argv)

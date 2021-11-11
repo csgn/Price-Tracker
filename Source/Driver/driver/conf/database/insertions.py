@@ -1,6 +1,6 @@
 import conf.database as db
 from conf.scripts.altcursor import AlterCursor
-import conf.scripts.time as time
+import conf.scripts.util as util
 
 
 def __INSERT_RELATION__(*args, **kwargs):
@@ -25,14 +25,14 @@ def __INSERT_RELATION__(*args, **kwargs):
         """)
 
 
-def __INSERT_ROW__(*, attrs, table, isdistinct=None):
+def __INSERT_ROW__(*, attrs, table, ifexists=None):
     keys, values = list(attrs.keys()), list(attrs.values())
 
     res = None
-    if isdistinct:
+    if ifexists:
         with AlterCursor() as altcur:
             altcur.cursor.execute(f"""
-                SELECT {isdistinct['row']} from {table}
+                SELECT {ifexists['row']} from {table}
                     WHERE url='{attrs['url']}'
             """)
             res = altcur.fetch()
@@ -67,10 +67,10 @@ def insert(other):
     rate = "null" if other["rate"] is None else other["rate"]
     images = '{' + ",".join(f'"{image}"' for image in other["images"]) + '}'
 
-    brandid = __INSERT_ROW__(attrs=other["brand"], table="brand", isdistinct={
+    brandid = __INSERT_ROW__(attrs=other["brand"], table="brand", ifexists={
         "row": "brandid"})
 
-    categoryid = __INSERT_ROW__(attrs=other["category"], table="category", isdistinct={
+    categoryid = __INSERT_ROW__(attrs=other["category"], table="category", ifexists={
         "row": "categoryid"})
 
     __INSERT_RELATION__(
@@ -79,7 +79,7 @@ def insert(other):
     productid = __INSERT_ROW__(attrs={
         "name": name, "images": images, "url": url,
         "rate": rate, "brandid": brandid,
-        "categoryid": categoryid}, table="product")
+        "categoryid": categoryid}, table="product", ifexists={"row": "productid"})
 
     supplierids = []
     for supplier in other["supplier"]:
@@ -87,11 +87,11 @@ def insert(other):
         del supplier['price']
 
         supplier["rate"] = "null" if supplier["rate"] is None else supplier["rate"]
-        supplierid = __INSERT_ROW__(attrs=supplier, table="supplier", isdistinct={
+        supplierid = __INSERT_ROW__(attrs=supplier, table="supplier", ifexists={
             "row": "supplierid"})
 
         priceid = __INSERT_ROW__(
-            attrs={"amount": supplier_price, "startdate": f"to_timestamp('{time.now()}', 'yyyy-mm-dd hh24:mi:ss')", "supplierid": supplierid}, table="price")
+            attrs={"amount": supplier_price, "startdate": f"to_timestamp('{util.now()}', 'yyyy-mm-dd hh24:mi:ss')", "supplierid": supplierid}, table="price")
 
         __INSERT_RELATION__(
             {"supplierid": supplierid, "brandid": brandid}, table="brandownedbysupplier")
@@ -104,7 +104,7 @@ def insert(other):
         supplierids.append(supplierid)
 
     for subcategory in other["subcategory"]:
-        subcategoryid = __INSERT_ROW__(attrs={**subcategory, "categoryid": categoryid}, table="subcategory", isdistinct={
+        subcategoryid = __INSERT_ROW__(attrs={**subcategory, "categoryid": categoryid}, table="subcategory", ifexists={
             "row": "subcategoryid"})
 
         __INSERT_RELATION__(
