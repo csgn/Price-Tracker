@@ -9,7 +9,7 @@ def makeQuery(query_str: str):
         try:
             cursor.execute(query_str)
         except:
-            return
+            return JsonResponse({'error': 'Database Error'}, safe=False, status=502)
 
         columns = [col[0] for col in cursor.description]
         res = [dict(zip(columns, row)) for row in cursor.fetchall()]
