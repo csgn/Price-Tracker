@@ -202,7 +202,7 @@ GET /suppliers/<supplierid>/product
 ```javascript
 {
     productid: integer,
-    name: varchar
+    name: varchar,
     images: [ varchar ],
     url: varchar,
     rate: float,
@@ -287,6 +287,7 @@ GET /brands/<brandid>/supplier
 {
     supplierid: integer,
     name: varchar,
+    rate: float,
     url: varchar
 }
 ```
@@ -365,7 +366,7 @@ GET /categories/<categoryid>/brand
 {
     brandid: integer,
     name: varchar,
-    url: varchar,
+    url: varchar
 },
 ...
 ```
@@ -380,6 +381,7 @@ GET /categories/<categoryid>/supplier
 {
     supplierid: integer,
     name: varchar,
+    rate: float,
     url: varchar
 },
 ...
@@ -443,7 +445,7 @@ GET /subcategories/<subcategoryid>/category
 {
     categoryid: integer,
     name: varchar,
-    url: varchar,
+    url: varchar
 },
 ...
 ```
@@ -458,7 +460,7 @@ GET /subcategories/<subcategoryid>/brand
 {
     brandid: integer,
     name: varchar,
-    url: varchar,
+    url: varchar
 },
 ...
 ```
@@ -473,6 +475,7 @@ GET /subcategories/<subcategoryid>/supplier
 {
     supplierid: integer,
     name: varchar,
+    rate: float,
     url: varchar
 },
 ...
