@@ -300,7 +300,7 @@ GET /brands/<brandid>/product
 ```javascript
 {
     productid: integer,
-    name: varchar
+    name: varchar,
     images: [ varchar ],
     url: varchar,
     rate: float,
@@ -394,7 +394,7 @@ GET /categories/<categoryid>/product
 ```javascript
 {
     productid: integer,
-    name: varchar
+    name: varchar,
     images: [ varchar ],
     url: varchar,
     rate: float,
@@ -487,7 +487,7 @@ GET /subcategories/<subcategoryid>/product
 ```javascript
 {
     productid: integer,
-    name: varchar
+    name: varchar,
     images: [ varchar ],
     url: varchar,
     rate: float,
