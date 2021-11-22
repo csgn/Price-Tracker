@@ -1,6 +1,6 @@
 # Backend
 
-## Product
+## [Product](https://github.com/csgn/Price-Tracker/blob/main/Source/Backend/core/product/views.py)
 
 ```http
 GET /products/
@@ -117,7 +117,7 @@ GET /products/<productid>/supplier
 
 ---
 
-## Supplier
+## [Supplier](https://github.com/csgn/Price-Tracker/blob/main/Source/Backend/core/supplier/views.py)
 
 ```http
 GET /suppliers/
@@ -216,7 +216,7 @@ GET /suppliers/<supplierid>/product
 
 ---
 
-## Brand
+## [Brand](https://github.com/csgn/Price-Tracker/blob/main/Source/Backend/core/brand/views.py)
 
 ```http
 GET /brands/
@@ -310,7 +310,7 @@ GET /brands/<brandid>/product
 ...
 ```
 
-## Category
+## [Category](https://github.com/csgn/Price-Tracker/blob/main/Source/Backend/core/category/views.py)
 
 ```http
 GET /categories/
@@ -404,7 +404,7 @@ GET /categories/<categoryid>/product
 ...
 ```
 
-## Subcategory
+## [Subcategory](https://github.com/csgn/Price-Tracker/blob/main/Source/Backend/core/subcategory/views.py)
 
 ```http
 GET /subcategories/
