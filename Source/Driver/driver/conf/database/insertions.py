@@ -4,23 +4,27 @@ import conf.scripts.util as util
 
 
 def __INSERT_RELATION__(*args, **kwargs):
-    id1_name, id2_name = args[0].keys()
-    id1, id2 = args[0].values()
     table = list(kwargs.values())[0]
+    columns = args[0].keys()
+    values = list(map(lambda x: str(x), args[0].values()))
+    where = " and ".join(
+        list(map(lambda p: f"{p[0]} = {p[1]}", list(zip(columns, values)))))
+
+    columns = ",".join(columns)
+    values = ",".join(values)
 
     with AlterCursor() as altcur:
         altcur.cursor.execute(f"""
-            SELECT {id1_name}, {id2_name} from {table}
-                WHERE ({id1_name}={id1} and {id2_name}={id2});
+            SELECT {columns} from {table}
+                WHERE ({where});
         """)
         res = altcur.fetch()
 
     if not res:
         db.cursor.execute(f"""
-            INSERT INTO {table} ({id1_name}, {id2_name})
+            INSERT INTO {table} ({columns})
                 VALUES (
-                    {id1},
-                    {id2}
+                    {values}
                 )
         """)
 
@@ -29,7 +33,7 @@ def __INSERT_ROW__(*, attrs, table, ifexists=None):
     keys, values = list(attrs.keys()), list(attrs.values())
 
     res = None
-    if ifexists:
+    if ifexists and table != "price":
         with AlterCursor() as altcur:
             altcur.cursor.execute(f"""
                 SELECT {ifexists['row']} from {table}
@@ -42,18 +46,16 @@ def __INSERT_ROW__(*, attrs, table, ifexists=None):
 
     q = ""
     for i in values:
-        if type(i) is str and i != 'null' and "startdate" not in keys:
+        if type(i) is str and i != 'null':
             q += f"'{i}'"
         else:
             q += str(i)
         q += ','
 
-    q = q[:-1]
-
     db.cursor.execute(f"""
         INSERT INTO {table} ({",".join(keys)})
             VALUES (
-                {q}
+                {q[:-1]}
             )
             RETURNING {table + 'id'};
     """)
@@ -91,7 +93,7 @@ def insert(other):
             "row": "supplierid"})
 
         priceid = __INSERT_ROW__(
-            attrs={"amount": supplier_price, "startdate": f"to_timestamp('{util.now()}', 'yyyy-mm-dd hh24:mi:ss')", "supplierid": supplierid}, table="price")
+            attrs={"amount": supplier_price, "supplierid": supplierid, "productid": productid}, table="price")
 
         __INSERT_RELATION__(
             {"supplierid": supplierid, "brandid": brandid}, table="brandownedbysupplier")

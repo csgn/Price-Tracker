@@ -37,18 +37,6 @@ CREATE TABLE IF NOT EXISTS Supplier (
 );
 """
 
-__price = """
-CREATE TABLE IF NOT EXISTS Price (
-    PriceID serial,
-    Amount float,
-    StartDate timestamp not null,
-    SupplierID int not null,
-    FOREIGN KEY (SupplierID)
-        REFERENCES Supplier (SupplierID),
-    PRIMARY KEY (PriceID)
-);
-"""
-
 __product = """
 CREATE TABLE IF NOT EXISTS Product (
     ProductID serial,
@@ -66,87 +54,71 @@ CREATE TABLE IF NOT EXISTS Product (
 );
 """
 
+__price = """
+CREATE TABLE IF NOT EXISTS Price (
+    PriceID serial,
+    Amount float,
+    StartDate timestamp not null default now(),
+    supplierid int REFERENCES supplier,
+    productid int REFERENCES product,
+    PRIMARY KEY (PriceID)
+);
+"""
+
+
 __categoryownedbysupplier = """
 CREATE TABLE IF NOT EXISTS CategoryOwnedBySupplier (
-    SupplierID int not null,
-    CategoryID int not null,
-    FOREIGN KEY (SupplierID)
-        REFERENCES Supplier(SupplierID),
-    FOREIGN KEY (CategoryID)
-        REFERENCES Category (CategoryID),
-    PRIMARY KEY (SupplierID, CategoryID)
+    supplierid int REFERENCES supplier,
+    categoryid int REFERENCES category,
+    PRIMARY KEY (supplierid, categoryid)
 );
 """
 
 __categoryownedbybrand = """
 CREATE TABLE IF NOT EXISTS CategoryOwnedByBrand (
-    BrandID int not null,
-    CategoryID int not null,
-    FOREIGN KEY (BrandID)
-        REFERENCES Brand (BrandID),
-    FOREIGN KEY (CategoryID)
-        REFERENCES Category (CategoryID),
-    PRIMARY KEY (BrandID, CategoryID)
+    brandid int REFERENCES brand,
+    categoryid int REFERENCES category,
+    PRIMARY KEY (brandid, categoryid)
 );
 """
 
 __productownedbysupplier = """
 CREATE TABLE IF NOT EXISTS ProductOwnedBySupplier (
-    SupplierID int not null,
-    ProductID int not null,
-    FOREIGN KEY (SupplierID)
-        REFERENCES Supplier (SupplierID),
-    FOREIGN KEY (ProductID)
-        REFERENCES Product (ProductID),
-    PRIMARY KEY (SupplierID, ProductID)
+    supplierid int REFERENCES supplier,
+    productid int REFERENCES product,
+    PRIMARY KEY (supplierid, productid)
 );
 """
 
 __subcategoryownedbysupplier = """
 CREATE TABLE IF NOT EXISTS SubcategoryOwnedBySupplier (
-    SupplierID int not null,
-    SubcategoryID int not null,
-    FOREIGN KEY (SupplierID)
-        REFERENCES Supplier (SupplierID),
-    FOREIGN KEY (SubcategoryID)
-        REFERENCES Subcategory (SubcategoryID),
-    PRIMARY KEY (SupplierID, SubcategoryID)
+    supplierid int REFERENCES supplier,
+    subcategoryid int REFERENCES subcategory,
+    PRIMARY KEY (supplierid, subcategoryid)
 );
 """
 
 __productownedbysubcategory = """
 CREATE TABLE IF NOT EXISTS ProductOwnedBySubcategory (
-    SubcategoryID int not null,
-    ProductID int not null,
-    FOREIGN KEY (ProductID)
-        REFERENCES Product (ProductID),
-    FOREIGN KEY (SubcategoryID)
-        REFERENCES Subcategory (SubcategoryID),
-    PRIMARY KEY (SubcategoryID, ProductID)
+    subcategoryid int REFERENCES subcategory,
+    productid int REFERENCES product,
+    PRIMARY KEY (subcategoryid, productid)
 );
 """
 
 __subcategoryownedbybrand = """
 CREATE TABLE IF NOT EXISTS SubcategoryOwnedByBrand (
-    BrandID int not null,
-    SubcategoryID int not null,
-    FOREIGN KEY (SubcategoryID)
-        REFERENCES Subcategory (SubcategoryID),
-    FOREIGN KEY (BrandID)
-        REFERENCES Brand (BrandID),
-    PRIMARY KEY (BrandID, SubcategoryID)
+    brandid int REFERENCES brand,
+    subcategoryid int REFERENCES subcategory,
+    PRIMARY KEY (brandid, subcategoryid)
 );
 """
 
 __brandownedbysupplier = """
 CREATE TABLE IF NOT EXISTS BrandOwnedBySupplier (
-    SupplierID int not null,
-    BrandID int not null,
-    FOREIGN KEY (SupplierID)
-        REFERENCES Supplier (SupplierID),
-    FOREIGN KEY (BrandID)
-        REFERENCES Brand (BrandID),
-    PRIMARY KEY (SupplierID, BrandID)
+    supplierid int REFERENCES supplier,
+    brandid int REFERENCES brand,
+    PRIMARY KEY (supplierid, brandid)
 );
 """
 
@@ -155,8 +127,8 @@ STATIC_TABLES = {
     "Subcategory": __subcategory,
     "Brand": __brand,
     "Supplier": __supplier,
-    "Price": __price,
     "Product": __product,
+    "Price": __price,
     "CategoryOwnedBySupplier": __categoryownedbysupplier,
     "CategoryOwnedByBrand": __categoryownedbybrand,
     "ProductOwnedBySupplier": __productownedbysupplier,
