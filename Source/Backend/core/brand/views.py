@@ -1,6 +1,4 @@
-from django.http import JsonResponse
-
-from util import makeQuery
+from util import makeQuery, convertToPSQL
 
 
 def brands_view(request):
@@ -10,11 +8,28 @@ def brands_view(request):
         """)
 
 
-def brands_brand_view(request, brandid=None):
+def brands_brand_view(request, brandid):
     if request.method == 'GET':
         return makeQuery(f"""
             select * from brand where brandid = {brandid}
         """)
+
+    elif request.method == 'PUT':
+        import json
+        props = convertToPSQL(json.loads(request.body))
+
+        return makeQuery(f"""
+            update brand 
+                set {props}
+            where brandid = {brandid}
+        """, False)
+
+    elif request.method == 'DELETE':
+        return makeQuery(f"""
+            delete
+                from brand 
+            where brandid = {brandid}
+        """, False)
 
 
 def brands_brand_subcategories_view(request, brandid):

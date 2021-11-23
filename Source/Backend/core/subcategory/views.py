@@ -1,6 +1,4 @@
-from django.http import JsonResponse
-
-from util import makeQuery
+from util import makeQuery, convertToPSQL
 
 
 def subcategories_view(request):
@@ -10,11 +8,28 @@ def subcategories_view(request):
         """)
 
 
-def subcategories_subcategory_view(request, subcategoryid=None):
+def subcategories_subcategory_view(request, subcategoryid):
     if request.method == 'GET':
         return makeQuery(f"""
             select * from subcategory where subcategoryid = {subcategoryid}
         """)
+
+    elif request.method == 'PUT':
+        import json
+        props = convertToPSQL(json.loads(request.body))
+
+        return makeQuery(f"""
+            update subcategory
+                set {props}
+            where subcategoryid = {subcategoryid}
+        """, False)
+
+    elif request.method == 'DELETE':
+        return makeQuery(f"""
+            delete
+                from subcategory
+            where subcategoryid = {subcategoryid}
+        """, False)
 
 
 def subcategories_subcategory_categories_view(request, subcategoryid):

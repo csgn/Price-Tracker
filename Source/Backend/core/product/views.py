@@ -1,6 +1,6 @@
-from django.http import JsonResponse
+from django.http.response import HttpResponse
 
-from util import makeQuery
+from util import makeQuery, convertToPSQL
 
 
 def products_view(request):
@@ -10,11 +10,31 @@ def products_view(request):
         """)
 
 
-def products_product_view(request, productid=None):
+def products_product_view(request, productid):
     if request.method == 'GET':
         return makeQuery(f"""
             select * from product where productid = {productid}
         """)
+
+    elif request.method == 'POST':
+        return HttpResponse("posted")
+
+    elif request.method == 'PUT':
+        import json
+        props = convertToPSQL(json.loads(request.body))
+
+        return makeQuery(f"""
+            update product
+                set {props}
+            where productid = {productid}
+        """, False)
+
+    elif request.method == 'DELETE':
+        return makeQuery(f"""
+            delete
+                from product
+            where productid = {productid}
+        """, False)
 
 
 def products_product_price_view(request, productid):

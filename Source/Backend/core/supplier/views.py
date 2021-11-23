@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from util import makeQuery
+from util import makeQuery, convertToPSQL
 
 
 def suppliers_view(request):
@@ -10,11 +10,28 @@ def suppliers_view(request):
         """)
 
 
-def suppliers_supplier_view(request, supplierid=None):
+def suppliers_supplier_view(request, supplierid):
     if request.method == 'GET':
         return makeQuery(f"""
             select * from supplier where supplierid = {supplierid}
         """)
+
+    elif request.method == 'PUT':
+        import json
+        props = convertToPSQL(json.loads(request.body))
+
+        return makeQuery(f"""
+            update supplier
+                set {props}
+            where supplierid = {supplierid}
+        """, False)
+
+    elif request.method == 'DELETE':
+        return makeQuery(f"""
+            delete
+                from product
+            where supplierid = {supplierid}
+        """, False)
 
 
 def suppliers_supplier_subcategories_view(request, supplierid):

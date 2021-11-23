@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.views.decorators.csrf import csrf_exempt
 
 from .views import (
     subcategories_subcategory_supplier_view, subcategories_subcategory_brands_view,
@@ -9,7 +9,7 @@ from .views import (
 
 urlpatterns = [
     path('', subcategories_view),
-    path('<int:subcategoryid>/', subcategories_subcategory_view),
+    path('<int:subcategoryid>/', csrf_exempt(subcategories_subcategory_view)),
     path('<int:subcategoryid>/category/',
          subcategories_subcategory_categories_view),
     path('<int:subcategoryid>/brand/', subcategories_subcategory_brands_view),

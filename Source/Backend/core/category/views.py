@@ -1,6 +1,4 @@
-from django.http import JsonResponse
-
-from util import makeQuery
+from util import makeQuery, convertToPSQL
 
 
 def categories_view(request):
@@ -10,11 +8,28 @@ def categories_view(request):
         """)
 
 
-def categories_category_view(request, categoryid=None):
+def categories_category_view(request, categoryid):
     if request.method == 'GET':
         return makeQuery(f"""
             select * from category where categoryid = {categoryid}
         """)
+
+    elif request.method == 'PUT':
+        import json
+        props = convertToPSQL(json.loads(request.body))
+
+        return makeQuery(f"""
+            update category
+                set {props}
+            where categoryid = {categoryid}
+        """, False)
+
+    elif request.method == 'DELETE':
+        return makeQuery(f"""
+            delete
+                from category
+            where categoryid = {categoryid}
+        """, False)
 
 
 def categories_category_subcategories_view(request, categoryid):
