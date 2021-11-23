@@ -37,6 +37,21 @@ GET /products/<productid>
 }
 ```
 
+```http
+PUT /products/<productid>
+```
+
+```javascript
+{
+    name: varchar,
+    rate: float,
+}
+```
+
+```http
+DELETE /products/<productid>
+```
+
 ---
 
 ```http
@@ -148,6 +163,21 @@ GET /suppliers/<supplierid>
 }
 ```
 
+```http
+PUT /suppliers/<supplierid>
+```
+
+```javascript
+{
+    name: varchar,
+    rate: float,
+}
+```
+
+```http
+DELETE /suppliers/<supplierid>
+```
+
 ---
 
 ```http
@@ -246,6 +276,20 @@ GET /brands/<brandid>
 }
 ```
 
+```http
+PUT /brands/<brandid>
+```
+
+```javascript
+{
+    name: varchar,
+}
+```
+
+```http
+DELETE /brands/<brandid>
+```
+
 ---
 
 ```http
@@ -338,6 +382,26 @@ GET /categories/<categoryid>
     name: varchar,
     url: varchar
 }
+```
+
+```http
+PUT /categories/<categoryid>
+```
+
+```javascript
+{
+    name: varchar,
+}
+```
+
+```http
+DELETE /categories/<categoryid>
+```
+
+---
+
+```http
+GET /brands/<brandid>/subcategory
 ```
 
 ---
@@ -433,6 +497,20 @@ GET /subcategories/<subcategoryid>
     name: varchar,
     url: varchar
 }
+```
+
+```http
+PUT /subcategories/<subcategoryid>
+```
+
+```javascript
+{
+    name: varchar,
+}
+```
+
+```http
+DELETE /subcategories/<subcategoryid>
 ```
 
 ---
