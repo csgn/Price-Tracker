@@ -15,7 +15,7 @@ def __is_cached(fun):
         content_file = util.get_hash(url)
 
         if not os.path.exists(settings.CACHE_FOLDER + content_file):
-            log.warning(content_file, "not found in cache", fore=log.Fore.RED)
+            log.warning(content_file, "not found in cache")
             return fun(url=args[0])
 
         log.info(content_file, "found in cache", fore=log.Fore.LIGHTGREEN_EX)
