@@ -11,7 +11,6 @@ from typing import List
 import conf.logger as log
 import conf.global_settings as settings
 
-from conf.scripts import util
 from conf.database import insertions, queries, tables
 from conf.scripts import parser, fetch, util
 from conf.webdriver import DriverConnection
