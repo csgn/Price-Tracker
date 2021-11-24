@@ -1,3 +1,3 @@
 PRODUCTS_FOLDER = "./.products/"
-URLS_FOLDER = "./resources/URLs"
 CACHE_FOLDER = "./.cache/"
+ORIGIN_URL = "http://www.hepsiburada.com"

@@ -1,5 +1,6 @@
 from contextlib import AbstractContextManager
-import conf.database as db
+
+from conf.database.db import DatabaseConnection
 
 
 class AlterCursor(AbstractContextManager):
@@ -7,7 +8,7 @@ class AlterCursor(AbstractContextManager):
         self.__cursor = None
 
     def __enter__(self):
-        self.__cursor = db.connection.cursor()
+        self.__cursor = DatabaseConnection.connection.cursor()
         return self
 
     def __exit__(self, *args):

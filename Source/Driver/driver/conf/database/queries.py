@@ -1,15 +1,15 @@
-import conf.database as db
+from conf.database.db import DatabaseConnection
 
 
 def TableIsExists(table: str):
-    db.cursor.execute(f"""
+    DatabaseConnection.cursor.execute(f"""
         select exists(select relname from pg_class
             where relname='{table.lower()}')
     """)
 
-    return db.cursor.fetchone()[0]
+    return DatabaseConnection.cursor.fetchone()[0]
 
 
 def CreateNewTable(schema: str):
-    db.cursor.execute(schema)
-    db.connection.commit()
+    DatabaseConnection.cursor.execute(schema)
+    DatabaseConnection.connection.commit()

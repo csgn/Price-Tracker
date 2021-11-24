@@ -4,9 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 import conf.global_settings as settings
-import conf.webdriver as driver
 import conf.scripts.util as util
 import conf.logger as log
+
+from conf.webdriver import DriverConnection
 
 
 def __is_cached(fun):
@@ -35,21 +36,22 @@ def __save_content(url: str, content: str) -> bool:
     try:
         with open(settings.CACHE_FOLDER + content_file, "w+") as file:
             file.write(content)
-    except:
+    except Exception as e:
+        log.error("FETCH", str(e))
         return False
 
     return True
 
 
 @__is_cached
-def get(url: str, cached_content: str = None) -> str:
+def run(url: str, cached_content: str = None) -> str:
     content_file = util.get_hash(url)
 
     if not cached_content:
         log.info(content_file, "fetching...", fore=log.Fore.LIGHTMAGENTA_EX)
-        driver.driver.get(url)
+        DriverConnection.driver.get(url)
 
-        content = driver.driver.page_source
+        content = DriverConnection.driver.page_source
 
         if not __save_content(url, content):
             log.warning(content_file, "is not saved")

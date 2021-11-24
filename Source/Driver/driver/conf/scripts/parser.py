@@ -6,8 +6,6 @@ import conf.global_settings as settings
 import conf.scripts.util as util
 import conf.logger as log
 
-DOMAIN = os.environ["URL_DOMAIN"]
-
 
 def __PARSE__PRODUCT_NAME(parser: BeautifulSoup):
     header__title_wrapper = parser.find("header", class_="title-wrapper")
@@ -22,7 +20,7 @@ def __PARSE__PRODUCT_BRAND(parser: BeautifulSoup):
     span__brand_name = parser.find("span", class_="brand-name")
     brand_name = span__brand_name.text.strip().replace('\'', '`')
     a__href = span__brand_name.find("a", href=True)["href"]
-    brand_url = DOMAIN + a__href
+    brand_url = settings.ORIGIN_URL + a__href
 
     return {
         'name': brand_name,
@@ -107,7 +105,7 @@ def __PARSE__PRODUCT_SUPPLIER(parser: BeautifulSoup):
                       0].replace('.', '').replace(',', '.'))
 
         # Get URL of supplier
-        merchant_url = DOMAIN + a__merchant_name["href"]
+        merchant_url = settings.ORIGIN_URL + a__merchant_name["href"]
 
         merchants.append({
             "name": merchant_name.replace('\'', '`'),
@@ -155,7 +153,7 @@ def __PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
     return subcategories
 
 
-def parse(url: str, content: str):
+def run(url: str, content: str):
     url_hash = util.get_hash(url)
     parser = BeautifulSoup(content, "lxml")
 
@@ -171,7 +169,7 @@ def parse(url: str, content: str):
         category = __PARSE__PRODUCT_CATEGORY(parser)
         subcategory = __PARSE__PRODUCT_SUBCATEGORY(parser)
     except Exception as e:
-        log.error(url_hash, "is corrupted")
+        log.error(url_hash, str(e))
         os.remove(settings.CACHE_FOLDER + url_hash)
         return
 
