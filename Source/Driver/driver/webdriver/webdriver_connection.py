@@ -35,6 +35,8 @@ class WebDriverConnection:
                 log.error(
                     "WEBDRIVER", "Service & Driver is not created __> " + str(e))
 
+        return cls._instance
+
     @classmethod
     @property
     def status(cls):

@@ -12,8 +12,9 @@ class DatabaseConnection:
     _connection = None
     _cursor = None
     __database_params: Dict = None
+    __db = None
 
-    def __new__(cls):
+    def __new__(cls, tables: str):
         if cls._instance is None:
             cls._instance = super(DatabaseConnection, cls).__new__(cls)
 
@@ -24,6 +25,8 @@ class DatabaseConnection:
                 cls._cursor = cls._connection.cursor()
                 log.info("DATABASE", "Connection succeeded",
                          fore=log.Fore.LIGHTGREEN_EX)
+
+                cls.__set_database_tables(tables)
             except Exception as e:
                 log.error("DATABASE", "Connection was refused __> " + str(e))
                 choice = input(
@@ -31,7 +34,6 @@ class DatabaseConnection:
 
                 if choice in ['y', 'Y']:
                     cls.reset()
-
         else:
             log.error("DATABASE", "Connection was already opened")
 
@@ -88,6 +90,18 @@ class DatabaseConnection:
             cls.__create_log(params)
 
         cls.__database_params = params
+
+    @classmethod
+    def __set_database_tables(cls, tables: str):
+        """ CREATE TABLE IF NOT EXISTS """
+        with open(tables, "r") as file:
+            try:
+                DatabaseConnection.cursor.execute(file.read())
+                log.info("DRIVER", "SQL including was succeed __> " + DatabaseConnection.cursor.statusmessage,
+                         fore=log.Fore.LIGHTGREEN_EX)
+                DatabaseConnection.connection.commit()
+            except Exception as e:
+                log.error("DRIVER", "SQL including was refused __>" + str(e))
 
     @classmethod
     def reset(cls) -> None:
