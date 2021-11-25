@@ -2,9 +2,9 @@ import os
 import json
 from bs4 import BeautifulSoup
 
-import conf.global_settings as settings
-import conf.scripts.util as util
-import conf.logger as log
+import settings
+import log
+from scripts import util
 
 
 def __PARSE__PRODUCT_NAME(parser: BeautifulSoup):
@@ -185,5 +185,5 @@ def run(url: str, content: str):
         "subcategory": subcategory,
     }
 
-    with open(settings.PRODUCTS_FOLDER + url_hash + '.json', "w+", encoding='utf8') as file:
+    with open(settings.PARSER_CACHE + url_hash + '.json', "w+", encoding='utf8') as file:
         json.dump(resval, file, indent=4, ensure_ascii=False)

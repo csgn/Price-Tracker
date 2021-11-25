@@ -1,6 +1,7 @@
 import hashlib
 import datetime
-import conf.global_settings as settings
+
+import settings
 
 from typing import List
 

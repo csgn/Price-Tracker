@@ -1,9 +1,9 @@
 from contextlib import AbstractContextManager
 
-from conf.database.db import DatabaseConnection
+from database.database_connection import DatabaseConnection
 
 
-class AlterCursor(AbstractContextManager):
+class SubCursor(AbstractContextManager):
     def __init__(self):
         self.__cursor = None
 

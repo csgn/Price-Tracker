@@ -1,13 +1,11 @@
 import os
 
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import settings
+import log
 
-import conf.global_settings as settings
-import conf.scripts.util as util
-import conf.logger as log
+from scripts import util
 
-from conf.webdriver import DriverConnection
+from webdriver.webdriver_connection import WebDriverConnection
 
 
 def __is_cached(fun):
@@ -15,14 +13,14 @@ def __is_cached(fun):
         url = args[0]
         content_file = util.get_hash(url)
 
-        if not os.path.exists(settings.CACHE_FOLDER + content_file):
+        if not os.path.exists(settings.WEBDRIVER_CACHE + content_file):
             log.warning(content_file, "not found in cache")
             return fun(url=args[0])
 
         log.info(content_file, "found in cache", fore=log.Fore.LIGHTGREEN_EX)
 
         cached_content = ""
-        with open(settings.CACHE_FOLDER + content_file, "r") as content:
+        with open(settings.WEBDRIVER_CACHE + content_file, "r") as content:
             cached_content = content.read()
 
         return fun(url, cached_content)
@@ -34,7 +32,7 @@ def __save_content(url: str, content: str) -> bool:
     content_file = util.get_hash(url)
 
     try:
-        with open(settings.CACHE_FOLDER + content_file, "w+") as file:
+        with open(settings.WEBDRIVER_CACHE + content_file, "w+") as file:
             file.write(content)
     except Exception as e:
         log.error("FETCH", str(e))
@@ -49,13 +47,12 @@ def run(url: str, cached_content: str = None) -> str:
 
     if not cached_content:
         log.info(content_file, "fetching...", fore=log.Fore.LIGHTMAGENTA_EX)
-        DriverConnection.driver.get(url)
+        WebDriverConnection.driver.get(url)
 
-        content = DriverConnection.driver.page_source
+        content = WebDriverConnection.driver.page_source
 
         if not __save_content(url, content):
             log.warning(content_file, "is not saved")
-            pass
         else:
             log.info(content_file, "was fetched", fore=log.Fore.LIGHTGREEN_EX)
             return content
