@@ -2,9 +2,9 @@ import os
 import json
 from bs4 import BeautifulSoup
 
-import conf.global_settings as settings
-import conf.scripts.util as util
-import conf.logger as log
+import settings
+import log
+from scripts import util
 
 
 def __PARSE__PRODUCT_NAME(parser: BeautifulSoup):
@@ -154,10 +154,9 @@ def __PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
 
 
 def run(url: str, content: str):
-    url_hash = util.get_hash(url)
     parser = BeautifulSoup(content, "lxml")
 
-    log.info(url_hash, "is being parsed")
+    log.info(url, "is being parsed")
 
     try:
         product_name = __PARSE__PRODUCT_NAME(parser)
@@ -169,8 +168,8 @@ def run(url: str, content: str):
         category = __PARSE__PRODUCT_CATEGORY(parser)
         subcategory = __PARSE__PRODUCT_SUBCATEGORY(parser)
     except Exception as e:
-        log.error(url_hash, str(e))
-        os.remove(settings.CACHE_FOLDER + url_hash)
+        log.error(url, str(e))
+        os.remove(settings.SERVER_CACHE + util.get_hash(url))
         return
 
     resval = {
@@ -185,5 +184,5 @@ def run(url: str, content: str):
         "subcategory": subcategory,
     }
 
-    with open(settings.PRODUCTS_FOLDER + url_hash + '.json', "w+", encoding='utf8') as file:
+    with open(settings.PARSER_CACHE + util.get_hash(url) + '.json', "w+", encoding='utf8') as file:
         json.dump(resval, file, indent=4, ensure_ascii=False)

@@ -1,6 +1,5 @@
-from conf.scripts.altcursor import AlterCursor
-
-from conf.database.db import DatabaseConnection
+from .subcursor import SubCursor
+from .database_connection import DatabaseConnection
 
 
 def __INSERT_RELATION__(*args, **kwargs):
@@ -13,12 +12,12 @@ def __INSERT_RELATION__(*args, **kwargs):
     columns = ",".join(columns)
     values = ",".join(values)
 
-    with AlterCursor() as altcur:
-        altcur.cursor.execute(f"""
+    with SubCursor() as subcur:
+        subcur.cursor.execute(f"""
             SELECT {columns} from {table}
                 WHERE ({where})
         """)
-        res = altcur.fetch()
+        res = subcur.fetch()
 
     if not res:
         DatabaseConnection.cursor.execute(f"""
@@ -34,15 +33,15 @@ def __INSERT_ROW__(*, attrs, table, ifexists=None):
 
     res = None
     if ifexists and table != "price":
-        with AlterCursor() as altcur:
-            altcur.cursor.execute(f"""
+        with SubCursor() as subcur:
+            subcur.cursor.execute(f"""
                 SELECT {ifexists['row']} from {table}
                     WHERE url='{attrs['url']}'
             """)
-            res = altcur.fetch()
+            res = subcur.fetch()
 
-    if res:
-        return res
+            if res:
+                return res
 
     q = ""
     for i in values:
@@ -117,4 +116,5 @@ def insert(other):
         for supplierid in supplierids:
             __INSERT_RELATION__(
                 {"supplierid": supplierid, "subcategoryid": subcategoryid}, table="subcategoryownedbysupplier")
+
     DatabaseConnection.connection.commit()

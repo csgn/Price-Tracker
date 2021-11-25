@@ -1,6 +1,7 @@
 import hashlib
 import datetime
-import conf.global_settings as settings
+
+import settings
 
 from typing import List
 
@@ -10,9 +11,12 @@ def get_hash(url: str) -> str:
     return hash_obj.hexdigest()
 
 
-def now():
+def now(no_str: bool = False):
     n = datetime.datetime.now()
-    return n.strftime('%Y-%m-%d %H:%M:%S')
+    if not no_str:
+        return n.strftime('%Y-%m-%d %H:%M:%S')
+
+    return n
 
 
 def get_urls(urls_path: str) -> List[str]:
