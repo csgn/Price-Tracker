@@ -2,4 +2,4 @@
 
 ## Demo
 
-![demo](https://i.imgur.com/355NtoY.gif)
+https://i.imgur.com/355NtoY.gif
