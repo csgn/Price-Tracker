@@ -12,9 +12,9 @@ def cli():
 
 
 @click.command()
-@click.option('--tables', type=str)
-def runserver(tables: str):
-    DriverServerHandler.run_forever(4444, DriverServerHandler, tables)
+def runserver():
+    DriverServerHandler.run_forever(
+        4444, DriverServerHandler, './resources/tables.sql')
 
 
 @click.command()
