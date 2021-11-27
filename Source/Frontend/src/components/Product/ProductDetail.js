@@ -29,8 +29,6 @@ export default function ProductDetail(props) {
   const currentSupplier = sortedSuppliersOfPrice[0];
   const currentPrice = sortedSuppliersOfPrice[0].price;
 
-  console.log(category, subcategory);
-
   return (
     <div>
       <div>
