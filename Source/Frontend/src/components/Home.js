@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 import Navbar from './Navbar/Navbar';
 
