@@ -1,7 +1,5 @@
-import os
 import click
 
-import settings
 
 from handler.server_handler import DriverServerHandler
 from webdriver.webdriver_connection import WebDriverConnection
@@ -14,27 +12,17 @@ def cli():
 
 
 @click.command()
-@click.option('--port', type=int, default=4444)
 @click.option('--tables', type=str)
-def runserver(port: int, tables: str):
-    dconn = DatabaseConnection(tables)
-    wconn = WebDriverConnection()
+def runserver(tables: str):
+    DriverServerHandler.run_forever(4444, DriverServerHandler, tables)
 
-    DriverServerHandler.run_forever(port, DriverServerHandler)
 
-    DatabaseConnection.close()
-    WebDriverConnection.close()
+@click.command()
+def clearcache():
+    DriverServerHandler.clear_caches()
 
 
 if __name__ == '__main__':
-    if not os.path.exists(settings.CACHE_FOLDER):
-        os.makedirs(settings.CACHE_FOLDER)
-
-    if not os.path.exists(settings.SERVER_CACHE):
-        os.makedirs(settings.SERVER_CACHE)
-
-    if not os.path.exists(settings.PARSER_CACHE):
-        os.makedirs(settings.PARSER_CACHE)
-
     cli.add_command(runserver)
+    cli.add_command(clearcache)
     cli()

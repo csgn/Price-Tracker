@@ -1,17 +1,48 @@
 import React, { useEffect, useState } from 'react';
 
-import { Card, Carousel, CarouselItem } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 
-import { fetchProductPrice } from './FetchProps';
+import {
+  fetchProductPrice,
+  fetchProductSupplier,
+  fetchProductCategory,
+  fetchProductSubcategory,
+  fetchProductBrand,
+} from './FetchProps';
+import ProductCarousel from './ProductCarousel';
+import ProductModal from './ProductModal';
 
 export default function ProductCard(props) {
-  const [product, setProduct] = useState([{}]);
-  const [productPrice, setProductPrice] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState();
+  const [productPrice, setProductPrice] = useState();
+  const [productSupplier, setProductSupplier] = useState();
+  const [productCategory, setProductCategory] = useState();
+  const [productSubcategory, setProductSubcategory] = useState();
+  const [productBrand, setProductBrand] = useState();
+  const [productModalShow, setProductModalShow] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     setProduct(props.product);
-    fetchProductPrice(props.product.productid, setProductPrice);
-  }, [props.product]);
+    async function run() {
+      await fetchProductPrice(props.product.productid, setProductPrice);
+      await fetchProductSupplier(props.product.productid, setProductSupplier);
+      await fetchProductBrand(props.product.productid, setProductBrand);
+      await fetchProductCategory(props.product.productid, setProductCategory);
+      await fetchProductSubcategory(
+        props.product.productid,
+        setProductSubcategory
+      );
+
+      setLoading(false);
+    }
+
+    run();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Card style={{ width: '16rem' }}>
@@ -23,32 +54,33 @@ export default function ProductCard(props) {
           backgroundColor: 'white',
         }}
       >
-        {product.name?.length > 56
-          ? product.name?.slice(0, 56) + '...'
-          : product.name}
+        {product?.name?.length > 56
+          ? product?.name?.slice(0, 56) + '...'
+          : product?.name}
       </Card.Header>
 
       <Card.Body style={{ textAlign: 'center' }}>
-        <Carousel variant="dark">
-          {product.images !== undefined &&
-            product.images.map((img) => {
-              return (
-                <CarouselItem>
-                  <Card.Img src={img}></Card.Img>
-                </CarouselItem>
-              );
-            })}
-        </Carousel>
+        <ProductCarousel images={product?.images} />
         <Card.Text>
           <span>{productPrice[0]?.amount} </span>
           <i>TL</i>
         </Card.Text>
-        <a
-          href={`/products/${product.productid}/`}
-          className="btn btn-outline-dark"
+        <Button
+          variant="outline-dark"
+          onClick={() => setProductModalShow(true)}
         >
-          Visit The Product Page
-        </a>
+          Show the Product
+        </Button>
+        <ProductModal
+          show={productModalShow}
+          onHide={() => setProductModalShow(false)}
+          product={product}
+          price={productPrice}
+          supplier={productSupplier}
+          brand={productBrand}
+          category={productCategory}
+          subcategory={productSubcategory}
+        />
       </Card.Body>
     </Card>
   );
