@@ -8,22 +8,29 @@ export default function Navbar() {
 
   return (
     <ListGroup>
-      <ListGroupItem>
-        <a href="/">Home</a>
+      <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
+        <a href="/products" className="text-secondary">
+          Home
+        </a>
       </ListGroupItem>
-      <ListGroupItem>
-        <a href="/products">Products</a>
+      <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
+        <a href="/products" className="text-secondary">
+          Products
+        </a>
       </ListGroupItem>
-      <ListGroupItem>
-        <a href="/track">Track New Product</a>
+      <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
+        <a href="/track" className="text-secondary">
+          Track New Product
+        </a>
       </ListGroupItem>
-      <ListGroupItem>
+      <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
         <Button
+          variant="outline-dark"
           disabled={refreshActive ? true : false}
           onClick={() => {
             setRefreshActive(true);
             axios
-              .get('http://localhost:4444/refresh')
+              .post('http://localhost:5000/refresh')
               .then((res) => {
                 console.log(res);
               })

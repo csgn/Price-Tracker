@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-//const ORIGIN = 'http://localhost:8000/products';
-const ORIGIN = 'https://pricetracker-backend.herokuapp.com/products';
+const ORIGIN = 'http://localhost:8000/products';
 
 export async function fetchProductBrand(productid, callback) {
   await axios

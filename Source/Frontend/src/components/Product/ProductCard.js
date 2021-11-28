@@ -45,7 +45,7 @@ export default function ProductCard(props) {
   }
 
   return (
-    <Card style={{ width: '16rem' }}>
+    <Card style={{ width: '15rem' }}>
       <Card.Header
         style={{
           textAlign: 'center',
@@ -54,23 +54,27 @@ export default function ProductCard(props) {
           backgroundColor: 'white',
         }}
       >
-        {product?.name?.length > 56
-          ? product?.name?.slice(0, 56) + '...'
+        {product?.name?.length > 32
+          ? product?.name?.slice(0, 32) + '...'
           : product?.name}
       </Card.Header>
 
       <Card.Body style={{ textAlign: 'center' }}>
         <ProductCarousel images={product?.images} />
-        <Card.Text>
+      </Card.Body>
+      <Card.Footer style={{ border: 'none' }}>
+        <Card.Text className="text-center">
           <span>{productPrice[0]?.amount} </span>
           <i>TL</i>
         </Card.Text>
-        <Button
-          variant="outline-dark"
-          onClick={() => setProductModalShow(true)}
-        >
-          Show the Product
-        </Button>
+        <center>
+          <Button
+            variant="outline-dark "
+            onClick={() => setProductModalShow(true)}
+          >
+            Show the Product
+          </Button>
+        </center>
         <ProductModal
           show={productModalShow}
           onHide={() => setProductModalShow(false)}
@@ -81,7 +85,7 @@ export default function ProductCard(props) {
           category={productCategory}
           subcategory={productSubcategory}
         />
-      </Card.Body>
+      </Card.Footer>
     </Card>
   );
 }
