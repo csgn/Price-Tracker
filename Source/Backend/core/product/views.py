@@ -16,9 +16,6 @@ def products_product_view(request, productid):
             select * from product where productid = {productid}
         """)
 
-    elif request.method == 'POST':
-        return HttpResponse("posted")
-
     elif request.method == 'PUT':
         import json
         props = convertToPSQL(json.loads(request.body))

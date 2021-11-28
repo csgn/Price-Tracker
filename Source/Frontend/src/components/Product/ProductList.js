@@ -28,8 +28,10 @@ export default function ProductList() {
         {products?.length > 0 &&
           products?.map((product) => {
             return (
-              <Col style={{ margin: '10px auto' }} key={product.productid}>
-                {product.productid && <ProductCard product={product} />}
+              <Col key={product.productid} md={4} xs={12}>
+                <div className="m-2">
+                  {product.productid && <ProductCard product={product} />}
+                </div>
               </Col>
             );
           })}

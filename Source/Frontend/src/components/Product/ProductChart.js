@@ -14,8 +14,8 @@ export default function ProductChart(props) {
   return (
     <div className="ml-auto mt-4">
       <LineChart
-        width={800}
-        height={300}
+        width={1300}
+        height={340}
         data={props.price}
         margin={{
           top: 5,

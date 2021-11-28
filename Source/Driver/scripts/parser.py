@@ -153,7 +153,7 @@ def __PARSE__PRODUCT_SUBCATEGORY(parser: BeautifulSoup):
     return subcategories
 
 
-def run(url: str, content: str):
+def run(url: str, content: str, writeTo, file: str, to: str):
     parser = BeautifulSoup(content, "lxml")
 
     log.info(url, "is being parsed")
@@ -168,8 +168,8 @@ def run(url: str, content: str):
         category = __PARSE__PRODUCT_CATEGORY(parser)
         subcategory = __PARSE__PRODUCT_SUBCATEGORY(parser)
     except Exception as e:
-        log.error(url, str(e))
-        os.remove(settings.SERVER_CACHE + util.get_hash(url))
+        log.error("PARSER", url + ' => ' + str(e))
+        os.remove(settings.FETCHED_CACHE + util.get_hash(url))
         return
 
     resval = {
@@ -184,5 +184,4 @@ def run(url: str, content: str):
         "subcategory": subcategory,
     }
 
-    with open(settings.PARSER_CACHE + util.get_hash(url) + '.json', "w+", encoding='utf8') as file:
-        json.dump(resval, file, indent=4, ensure_ascii=False)
+    return writeTo(resval, file=file, to=to, format="json")
