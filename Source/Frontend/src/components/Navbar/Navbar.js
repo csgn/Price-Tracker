@@ -9,17 +9,17 @@ export default function Navbar() {
   return (
     <ListGroup>
       <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
-        <a href="/products" className="text-secondary">
+        <a href="/products" className="text-secondary text-decoration-none">
           Home
         </a>
       </ListGroupItem>
       <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
-        <a href="/products" className="text-secondary">
+        <a href="/products" className="text-secondary text-decoration-none">
           Products
         </a>
       </ListGroupItem>
       <ListGroupItem style={{ border: 'none', fontSize: '32px' }}>
-        <a href="/track" className="text-secondary">
+        <a href="/track" className="text-secondary text-decoration-none">
           Track New Product
         </a>
       </ListGroupItem>

@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-const ORIGIN = 'http://localhost:8000/products';
+const djangoAPI = axios.create({
+  baseURL: 'http://localhost:8000/products/',
+  timeout: 1000,
+});
 
 export async function fetchProductBrand(productid, callback) {
-  await axios
-    .get(`${ORIGIN}/${productid}/brand/`)
+  await djangoAPI
+    .get(`${productid}/brand/`)
     .then(async (res) => {
       callback(res.data[0]);
     })
@@ -14,8 +17,8 @@ export async function fetchProductBrand(productid, callback) {
 }
 
 export async function fetchProductSubcategory(productid, callback) {
-  await axios
-    .get(`${ORIGIN}/${productid}/subcategory/`)
+  await djangoAPI
+    .get(`${productid}/subcategory/`)
     .then(async (res) => {
       callback(res.data);
     })
@@ -25,8 +28,8 @@ export async function fetchProductSubcategory(productid, callback) {
 }
 
 export async function fetchProductCategory(productid, callback) {
-  await axios
-    .get(`${ORIGIN}/${productid}/category/`)
+  await djangoAPI
+    .get(`${productid}/category/`)
     .then(async (res) => {
       callback(res.data[0]);
     })
@@ -36,14 +39,14 @@ export async function fetchProductCategory(productid, callback) {
 }
 
 export async function fetchProductSupplier(productid, callback) {
-  await axios.get(`${ORIGIN}/${productid}/supplier/`).then(async (res) => {
+  await djangoAPI.get(`${productid}/supplier/`).then(async (res) => {
     callback(res.data);
   });
 }
 
 export async function fetchProductPrice(productid, callback) {
-  await axios
-    .get(`${ORIGIN}/${productid}/price/`)
+  await djangoAPI
+    .get(`${productid}/price/`)
     .then(async (res) => {
       let data = res.data;
       data.map((el) => {
@@ -61,8 +64,8 @@ export async function fetchProductPrice(productid, callback) {
 }
 
 export async function fetchProduct(productid, callback) {
-  await axios
-    .get(`${ORIGIN}/${productid}/`)
+  await djangoAPI
+    .get(`${productid}/`)
     .then(async (res) => {
       callback(res.data[0]);
     })
@@ -72,8 +75,8 @@ export async function fetchProduct(productid, callback) {
 }
 
 export async function fetchProducts(callback) {
-  await axios
-    .get(`${ORIGIN}/`)
+  await djangoAPI
+    .get(`/`)
     .then(async (res) => {
       callback(res.data);
     })
