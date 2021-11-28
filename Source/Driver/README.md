@@ -1,25 +1,10 @@
 # Driver
 
 ```sh
-Usage: tracker.py [OPTIONS] COMMAND [ARGS]...
+$ export DATABASE_URL=postgres://<user>:<password>@localhost:5432/<dbname>
 
-Commands:
-  runserver
-
-Options:
-  --port INTEGER
-  --tables TEXT
-  --help          Show this message and exit.
-```
-
-```sh
-python tracker.py runserver --tables ./resources/tables.sql
-```
-
-```json
-POST localhost:4444
-{
-    "urls": [],
-    "refresh": bool
-}
+$ virtualenv venv
+$ source ./venv/bin/activate
+$ pip install -r requirements.txt
+$ python tracker.py
 ```
