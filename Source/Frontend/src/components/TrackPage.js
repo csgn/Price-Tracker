@@ -12,6 +12,16 @@ import {
 import axios from 'axios';
 
 export default function TrackPage() {
+  const driverAPI = axios.create({
+    baseURL: 'http://localhost:5000/',
+    timeout: 1000,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Methods': 'GET, POST',
+    },
+  });
+
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
   const [message, setMessage] = useState();
@@ -33,20 +43,10 @@ export default function TrackPage() {
     setMessage(null);
     setError(null);
 
-    axios
-      .post(
-        'http://localhost:5000/track',
-        {
-          urls,
-        },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': '*',
-            'Access-Control-Allow-Methods': 'GET, POST',
-          },
-        }
-      )
+    driverAPI
+      .post('/track', {
+        urls,
+      })
       .then((res) => {
         setError(null);
         setLoading(false);
