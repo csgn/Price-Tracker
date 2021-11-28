@@ -1,1 +1,3 @@
 # Docs
+
+![diagram](diagram.png)
