@@ -1,5 +1,8 @@
 # Driver
 
 ```sh
-python tracker.py
+$ virtualenv venv
+$ source ./venv/bin/activate 
+$ pip install -r requirements.txt
+$ python tracker.py
 ```
