@@ -1,5 +1,14 @@
 # Backend
 
+```bash
+$ virtualenv venv
+$ pip install -r requirements.txt
+$ python manage.py createsuperuser
+$ python manage.py makemigrations
+$ python manage.py migrate
+$ python manage.py runserver
+```
+
 ## [Product](https://github.com/csgn/Price-Tracker/blob/main/Source/Backend/core/product/views.py)
 
 ```http
