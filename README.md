@@ -1,12 +1,11 @@
 ## Price Tracking on @hepsiburada
 
-### Bugs
+### Bugs / Issues
 * [If the supplier sold their own product, the database doesn't understand that change, and if the sold product is cheap always shows up as the cheapest in the chart.](https://github.com/csgn/Price-Tracker/issues/6)
 * [Multiple session doesn't support.](https://github.com/csgn/Price-Tracker/issues/7)
 * [Time/Date problems in chart.](https://github.com/csgn/Price-Tracker/issues/8)
 * [API, Driver, Frontend problems.](https://github.com/csgn/Price-Tracker/issues/9)
 
-### Issues
 Feel free to submit issues and enhancement requests.
 
 ### Contributing
