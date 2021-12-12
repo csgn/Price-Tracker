@@ -1,3 +1,27 @@
+## Price Tracking on @hepsiburada
+
+### Bugs
+* If the supplier sold their own product, the database doesn't understand that change, and if the sold product is cheap always shows up as the cheapest in the chart.
+* Multiple session doesn't support.
+* Time/Date problems in chart.
+* API problems.
+* Frontend problems. (Loading etc.)
+* Driver problems.
+
+### Issues
+Feel free to submit issues and enhancement requests.
+
+### Contributing
+1. Fork the repo on GitHub
+2. Clone the project to your own machine
+3. Commit changes to your own branch
+4. Push your work back up to your fork
+5. Submit a Pull request so that I can review your changes
+
+NOTE: Be sure to merge the latest from "upstream" before making a pull request!
+
+### LICENSE SUMMARY
+```
 MIT License
 
 Copyright (c) 2021 Sergen Çepoğlu
@@ -19,5 +43,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-### price tracking on @hepsiburada
+```
