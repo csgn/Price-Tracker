@@ -1,5 +1,18 @@
 ## Price Tracking on @hepsiburada
 
+### Go to product page
+![step1](Docs/step1.png)
+
+### Copy the url then track it!
+![step2](Docs/step2.png)
+
+### Tracked products waiting for you on the home page...
+![step3](Docs/step3.png)
+![step4](Docs/step4.png)
+![step5](Docs/step5.png)
+
+
+
 ### Bugs / Issues
 * [If the supplier sold their own product, the database doesn't understand that change, and if the sold product is cheap always shows up as the cheapest in the chart.](https://github.com/csgn/Price-Tracker/issues/6)
 * [Multiple session doesn't support.](https://github.com/csgn/Price-Tracker/issues/7)
