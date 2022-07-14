@@ -1,4 +1,21 @@
 # Backend
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': <DATABASE_NAME>,
+        'HOST': <HOST_NAME>,
+        'PORT': <PORT>,
+        'USER': <POSTGRES_USERNAME>,
+        'PASSWORD': <POSTGRES_PASSWORD>,
+    }
+}
+```
+
+### Change the user password for default postgres user.
+```sql
+psql> ALTER USER postgres PASSWORD 'postgres';
+```
 
 ```bash
 $ virtualenv venv
